@@ -42,6 +42,7 @@ implement: set, clr, test
 // 0x1f is 111111 is 31
 #define MASK 0x1f
 #define N 1000
+
 struct bitVector
 {
 	// storage
@@ -82,7 +83,7 @@ struct bitVector
 
 	~bitVector()
 	{
-		cout << "removing bitVector...\n"; 
+		//cout << "removing bitVector...\n"; 
 		delete a;
 	}
 
