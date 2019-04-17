@@ -45,7 +45,7 @@ implement: set, clr, test
 
 struct bitVector
 {
-	// storage
+	// data
 	int * a;
 	size_t size;
 	bitVector(const size_t& sz): size((sz>>SHIFT)+1)
