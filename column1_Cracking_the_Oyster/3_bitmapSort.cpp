@@ -70,6 +70,31 @@ bool isSortedAscend(const vector<int>& nums)
 	return true;
 }
 
+vector<int> uniqueRandom(const int& k, const int& n)
+{	// directly copied from problem 4
+	if(k > n)
+	{
+		throw runtime_error("invalid k value: k has to be less than n");
+	}
+
+	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+	vector<int> nums;
+	nums.reserve(n);
+
+	for(int i = 0; i < n; ++i)
+	{	
+		nums.push_back(i);
+	}
+
+	for(int i = 0; i < k; ++i)
+	{	
+		int j = rand()%(n-i);
+		swap(nums[i], nums[i+j]);
+	}
+	return vector<int>(nums.begin(), nums.begin()+k);
+}
+
 void timeIt(void (*sortAlgorithm)(vector<int>&), const string& name, vector<int>& v)
 {
 	cout << "<<<<<<<<timeIt<<<<<<<<\n";
@@ -99,12 +124,7 @@ int main()
 {
 	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-	vector<int> input;
-	input.reserve(M);
-	for (int i = 0; i < M; ++i)
-	{
-		input.push_back(rand() % N);
-	}
+	vector<int> input = uniqueRandom(M, N);
 	vector<int> input_cp = input;
 
 	timeIt(bitmapSort, "bitmap sort", input);
