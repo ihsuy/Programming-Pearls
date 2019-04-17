@@ -33,41 +33,38 @@ using namespace std;
 Generating k integers less than n without duplicates
 */
 
-void arrSwap(vector<int>& arr, const int& i, const int& j)
-{
-	int temp = arr[i];
-	arr[i] = arr[j];
-	arr[j] = temp;
-}
-
 vector<int> uniqueRandom(const int& k, const int& n)
-{
+{	// create k unique random integer 
+	// ranging from 0 to n-1 inclusive
 	if(k > n)
 	{
 		throw runtime_error("invalid k value: k has to be less than n");
 	}
+
 	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
 	vector<int> nums;
 	nums.reserve(n);
 
 	for(int i = 0; i < n; ++i)
-	{
+	{	// first initialize full range of integers in a vector
 		nums.push_back(i);
 	}
 
 	for(int i = 0; i < k; ++i)
-	{
+	{	// while moving forward in the vector,
+		// randomly swap ith number with another
+		// integer in nums[i+1, n)
 		int j = rand()%(n-i);
-		arrSwap(nums, i, i+j);
+		swap(nums[i], nums[i+j]);
 	}
-
+	// only return the first k elements
 	return vector<int>(nums.begin(), nums.begin()+k);
 }
 
 int main()
 {
-	vector<int> r = uniqueRandom(10, 10);
+	vector<int> r = uniqueRandom(10, 100);
 	inspect<vector<int>>(r);
 
 	return 0;
