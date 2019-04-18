@@ -94,6 +94,40 @@ void vector_rotate_withJuggling(vector<int>& nums, int n)
 	}
 }
 
+void mSwap(vector<int>& nums, const int& a, const int& b, const int& m)
+{	// swap nums[a, ..., a+m-1] with nums[b, ..., b+m-1]
+	for(int i = 0; i < m; ++i)
+	{
+		swap(nums[a+i], nums[b+i]);
+	}
+}
+
+void vector_rotate_withGCD(vector<int>& nums, const int& n)
+{
+	if(n == nums.size() or n == 0)
+	{
+		return;
+	}
+
+	int i = n, j = nums.size()-n, p = n;
+	while(i != j)
+	{
+		if(i > j)
+		{
+			mSwap(nums, p-i, p, j);
+			i -= j;
+		}
+		else
+		{
+			mSwap(nums, p-i, p+j-i, i);
+			j -= i;
+		}
+		inspect<vector<int>>(nums);
+	}
+
+	mSwap(nums, p-i, p, i);
+}
+
 int main()
 {
 	vector<int> nums {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -102,15 +136,20 @@ int main()
 	{
 		vector<int> nums1 = nums;
 		vector<int> nums2 = nums;
+		vector<int> nums3 = nums;
 		cout << "n: " << n << endl;
 
-		vector_rotate_withReverse(nums1, n);
-		cout << "result1: ";
-		inspect<vector<int>>(nums1);
+		// vector_rotate_withReverse(nums1, n);
+		// cout << "result1: ";
+		// inspect<vector<int>>(nums1);
 
-		vector_rotate_withJuggling(nums2, n);
-		cout << "result2: ";
-		inspect<vector<int>>(nums2);
+		// vector_rotate_withJuggling(nums2, n);
+		// cout << "result2: ";
+		// inspect<vector<int>>(nums2);
+
+		vector_rotate_withGCD(nums3, n);
+		cout << "result3: ";
+		inspect<vector<int>>(nums3);
 
 		if(nums1 != nums2)
 		{
