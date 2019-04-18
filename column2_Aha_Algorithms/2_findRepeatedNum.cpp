@@ -48,7 +48,7 @@ the number of integers is halved in each iteration, so the worst-case
  run time of its log2 n passes was proportional to n log n. Jim Saxe
  reduced that to linear time by observing that the search can avoid
  carrying too many duplicates. When his search knows that a duplicate
- must be in a current range of m integers, it will only store m +1 integers
+ must be in a current upper of m integers, it will only store m +1 integers
  on its current work tape; if more integers would have gone on the tape,
  his program discards them. Although his method frequently ignores input
  variables, its strategy is conservative enough to ensure that it finds at
@@ -56,80 +56,87 @@ the number of integers is halved in each iteration, so the worst-case
 */
 
 // method1
-// narrowing down the range by utilizing pigeon hole principle
+// narrowing down the upper by utilizing pigeon hole principle
 // by checking 4 bits at a time for each 32 bits integer inputs
 
-int getBits(int n, const int& len, const int& i)
-{	// from the ith least significant digit, get the value
-	// of bits in n of length "len"
-	int mask = (1 << len) - 1;
-	n >>= i;
-	return mask & n;
-}
+// int getBits(int n, const int& len, const int& i)
+// {	// from the ith least significant digit, get the value
+// 	// of bits in n of length "len"
+// 	int mask = (1 << len) - 1;
+// 	n >>= i;
+// 	return mask & n;
+// }
 
-int findDubplicate(int* nums, const long& n)
-{
+int findDuplicate(int* nums, const long& n)
+{	// find any duplicate in nums
+	// mask is used to get the first mask_size bit
+	// and to cluster each number into buckets
 	const int mask_size = 4;
-	const int sz = 1<<(mask_size);
+	assert(mask_size < 16 and ((mask_size & (mask_size-1)) == 0));
+	int mask = (1 << mask_size)-1;
+
+	// size of extra memory
+	// more extra memory tends to give faster performance
+	const int sz = 1 << (mask_size);
 	int counter[sz];
 
-	int range = n / sz;
-	vector<int> signatures;
-	for (int b = 0; b <= 32-mask_size; b += mask_size)
-	{
-		memset(counter, 0, sizeof(int)*sz);
-		for (int i = 0; i < n; ++i)
-		{
-			bool valid = true;
+	// the maximum number that can exist in each "bucket"
+	// if no duplicates exist
+	int upper = n / sz;
+	// signature_cat is used to store concatnated signatures 
+	// through out the searching process
+	int signature_cat = 0;
 
-			for (int bb = 0; not signatures.empty() and bb < b; bb += mask_size)
-			{
-				int temp = getBits(nums[i], mask_size, bb);
-				if (temp != signatures[bb / mask_size])
-				{
-					valid = false;
+	for (int b = 0; b < 32 - mask_size; b += mask_size)
+	{	// b stands for "begin" and indicates the current begin location
+		// in numbers bit representation
+		memset(counter, 0, sizeof(int)*sz);
+
+		// sig_mask is used to get first lengthOf(signature_cat) bits
+		int sig_mask = (1 << b) - 1;
+
+		for (int i = 0; i < n; ++i)
+		{	// we put this in buckets if this number accords with 
+			// signature_cat
+			if (signature_cat == 0 or (signature_cat == (nums[i]&sig_mask)))
+			{	// get its new signature
+				int signature = (nums[i]>>b)&mask;
+				// put in bucket
+				counter[signature]++;
+
+				if (counter[signature] > upper)
+				{	// if size of certain bucket exceeds upper
+					// then we must have duplicates in this bucket
+					// we are done and its ok to further narrow down the range
+					signature_cat |= (signature << b);
 					break;
 				}
 			}
-
-			if (not valid)
-			{
-				continue;
-			}
-
-			int signature = getBits(nums[i], mask_size, b);
-
-			counter[signature]++;
-			if (counter[signature] > range)
-			{
-				signatures.push_back(signature);
-				break;
-			}
-
 		}
-		range /= sz;
+		// upper should be shrinked as our searching range is getting smaller
+		upper /= sz;
 	}
-
-	int result = 0;
-	for (int i = 0 ; i < signatures.size(); ++i)
-	{
-		result |= (signatures[i]<<(i*mask_size));
-	}
-
-	return result;
+	
+	return signature_cat;
 }
 
-long maxn = 43000000;
+long maxn = 80000000;
 int* nums = new int[maxn];
+
 int main()
-{	
+{
 	cout << "creating numbers...\n";
+
 	for (int i = 0; i < maxn; ++i)
 	{
 		nums[i] = i;
 	}
-	nums[4000000] = 3141592; // explicitly create a duplicate of value
+
+	nums[44298112] = 12983; // explicitly create a arbitrary duplicate of value at an arbitrary place
+
 	cout << "searching for duplicates...\n";
-	cout << "duplicate: " << findDubplicate(nums, maxn) << '\n';
+
+	cout << "duplicate: " << findDuplicate(nums, maxn) << '\n';
+
 	return 0;
 }
