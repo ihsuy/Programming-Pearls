@@ -56,6 +56,14 @@ void vector_rotate_withReverse(vector<int>& nums, int n)
 	reverse(nums.begin() + n, nums.end());
 }
 
+// method 2 juggling
+// notice that it doesn't matter what our n is
+// keep walking in a wrapping manner will always result in an cycle
+// in other words we will always be going back to where we started
+// number of steps we need to take in order to go back to the starting point
+// is actually equal to lcm(nums.size(), n)/n 
+// To rotate a vector to the right we just need to find all the cycles and swap every
+// entry in the cycle with the value on its right in the same cycle
 void vector_rotate_withJuggling(vector<int>& nums, int n)
 {
 	int swap_count = 0;
