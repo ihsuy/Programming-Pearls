@@ -139,13 +139,13 @@ int main()
 		vector<int> nums3 = nums;
 		cout << "n: " << n << endl;
 
-		// vector_rotate_withReverse(nums1, n);
-		// cout << "result1: ";
-		// inspect<vector<int>>(nums1);
+		vector_rotate_withReverse(nums1, n);
+		cout << "result1: ";
+		inspect<vector<int>>(nums1);
 
-		// vector_rotate_withJuggling(nums2, n);
-		// cout << "result2: ";
-		// inspect<vector<int>>(nums2);
+		vector_rotate_withJuggling(nums2, n);
+		cout << "result2: ";
+		inspect<vector<int>>(nums2);
 
 		vector_rotate_withGCD(nums3, n);
 		cout << "result3: ";
