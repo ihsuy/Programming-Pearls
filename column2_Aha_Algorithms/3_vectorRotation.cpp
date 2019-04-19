@@ -66,6 +66,12 @@ void vector_rotate_withReverse(vector<int>& nums, int n)
 // entry in the cycle with the value on its right in the same cycle
 void vector_rotate_withJuggling(vector<int>& nums, int n)
 {
+	if(n == 0 or n == nums.size())
+	{
+		return;
+	}
+	n %= nums.size();
+	
 	int swap_count = 0;
 	int i = 0;
 	while (swap_count < nums.size())
