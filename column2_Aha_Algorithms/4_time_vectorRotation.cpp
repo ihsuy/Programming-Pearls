@@ -96,7 +96,7 @@ int gcd(int a, int b)
 		}
 		else
 		{
-			a += b;
+			b -= a;
 		}
 	}
 	return a;
@@ -111,7 +111,6 @@ void vector_rotate_withJuggling2(vector<int>& nums, int n)
 	n %= nums.size();
 
 	int number_of_cycle = gcd(nums.size(), n);
-
 	// int cycle_size = nums.size()/number_of_cycle;
 
 	for(int i = 0; i < number_of_cycle; ++i)
@@ -150,7 +149,7 @@ void mSwap(vector<int>& nums, const int& a, const int& b, const int& m)
 }
 
 void vector_rotate_withGCD(vector<int>& nums, const int& n)
-{
+{ 	// this rotate backwards
 	if (n == nums.size() or n == 0)
 	{
 		return;
@@ -176,10 +175,9 @@ void vector_rotate_withGCD(vector<int>& nums, const int& n)
 
 // end of copy paste from problem 3
 
-
 int main()
 {
-	const int kDataSize = 10000000;
+	const int kDataSize = 1000000;
 
 	vector<int> vo;
 	for (int i = 0; i < kDataSize; ++i)
