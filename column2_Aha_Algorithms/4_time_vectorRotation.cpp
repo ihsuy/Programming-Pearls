@@ -57,7 +57,7 @@ void vector_rotate_withJuggling(vector<int>& nums, int n)
 		return;
 	}
 	n %= nums.size();
-	
+
 	int swap_count = 0;
 	int i = 0;
 	while (swap_count < nums.size())
@@ -179,48 +179,49 @@ void vector_rotate_withGCD(vector<int>& nums, const int& n)
 
 int main()
 {
-	// const int kDataSize = 10000000;
+	const int kDataSize = 10000000;
 
-	// vector<int> vo;
-	// for (int i = 0; i < kDataSize; ++i)
-	// {
-	// 	vo.push_back(i);
-	// }
-	// vector<int> v;
-	// cout << "experimenting on a number array of size " << kDataSize << endl;
-	// for (int shift = 1; shift < kDataSize; shift *= 10)
-	// {
-	// 	cout << "shifting by " << shift << '\n';
-	// 	v = vo;
-	// 	auto t1 = chrono::high_resolution_clock::now();
-	// 	vector_rotate_withReverse(v, shift);
-	// 	auto t2 = chrono::high_resolution_clock::now() - t1;
-	// 	cout << "reverse method  : " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
-	// 	v = vo;
-	// 	t1 = chrono::high_resolution_clock::now();
-	// 	vector_rotate_withJuggling(v, shift);
-	// 	t2 = chrono::high_resolution_clock::now() - t1;
-	// 	cout << "juggling method : " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
-	// 	v = vo;
-	// 	t1 = chrono::high_resolution_clock::now();
-	// 	vector_rotate_withJuggling2(v, shift);
-	// 	t2 = chrono::high_resolution_clock::now() - t1;
-	// 	cout << "juggling method2: " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
-	// 	v = vo;
-	// 	t1 = chrono::high_resolution_clock::now();
-	// 	vector_rotate_withGCD(v, shift);
-	// 	t2 = chrono::high_resolution_clock::now() - t1;
-	// 	cout << "mSwap method    : " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
-	// }
-	
-	vector<int> to{1,2,3,4,5,6,7,8};
-
-	for(int i = 0; i < 10; ++i)
+	vector<int> vo;
+	for (int i = 0; i < kDataSize; ++i)
 	{
-		vector<int> t = to;
-		vector_rotate_withJuggling2(t, i);
-		vector_rotate_withJuggling(t, i);
-		inspect<vector<int>>(t);
+		vo.push_back(i);
 	}
+	vector<int> v;
+	cout << "experimenting on a number array of size " << kDataSize << endl;
+	for (int shift = 1; shift < kDataSize; shift *= 10)
+	{
+		cout << "shifting by " << shift << '\n';
+		v = vo;
+		auto t1 = chrono::high_resolution_clock::now();
+		vector_rotate_withReverse(v, shift);
+		auto t2 = chrono::high_resolution_clock::now() - t1;
+		cout << "reverse method  : " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
+		v = vo;
+		t1 = chrono::high_resolution_clock::now();
+		vector_rotate_withJuggling(v, shift);
+		t2 = chrono::high_resolution_clock::now() - t1;
+		cout << "juggling method : " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
+		v = vo;
+		t1 = chrono::high_resolution_clock::now();
+		vector_rotate_withJuggling2(v, shift);
+		t2 = chrono::high_resolution_clock::now() - t1;
+		cout << "juggling method2: " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
+		v = vo;
+		t1 = chrono::high_resolution_clock::now();
+		vector_rotate_withGCD(v, shift);
+		t2 = chrono::high_resolution_clock::now() - t1;
+		cout << "mSwap method    : " << chrono::duration_cast<chrono::microseconds>(t2).count() << endl;
+	}
+	
+	// //test
+	// vector<int> to{1,2,3,4,5,6,7,8};
+
+	// for(int i = 0; i < 10; ++i)
+	// {
+	// 	vector<int> t = to;
+	// 	vector_rotate_withJuggling2(t, i);
+	// 	vector_rotate_withJuggling(t, i);
+	// 	inspect<vector<int>>(t);
+	// }
 	return 0;
 }
