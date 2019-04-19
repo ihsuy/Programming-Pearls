@@ -19,13 +19,13 @@
 
 typedef long long ll;
 inline int two(int n) { return 1 << n; }
-inline int test(int n, int b) { return (n >> b) & 1; }
+inline int test(int n, int b) { return (n>>b)&1; }
 inline void set_bit(int & n, int b) { n |= two(b); }
 inline void unset_bit(int & n, int b) { n &= ~two(b); }
 inline int last_bit(int n) { return n & (-n); }
-inline int ones(int n) { int res = 0; while (n && ++res) n -= n & (-n); return res; }
+inline int ones(int n) { int res = 0; while(n && ++res) n-=n&(-n); return res; }
 template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+inline void inspect(T& t){typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -94,6 +94,45 @@ void vector_rotate_withJuggling(vector<int>& nums, int n)
 	}
 }
 
+void vector_rotate_withJuggling2(vector<int>& nums, int n)
+{	// rotate backward
+	if(n == 0 or n == nums.size())
+	{
+		return;
+	}
+	n %= nums.size();
+
+	int number_of_cycle = gcd(nums.size(), n);
+
+	// int cycle_size = nums.size()/number_of_cycle;
+
+	for(int i = 0; i < number_of_cycle; ++i)
+	{
+		int prev = nums[i];
+		int j = i;
+		for(;;)
+		{
+			int next = j + n;
+
+			if(next >= nums.size())
+			{
+				next-=nums.size();
+			}
+
+			if(next == i)
+			{
+				break;
+			}
+
+			nums[j] = nums[next];
+
+			j = next;
+		}
+
+		nums[j] = prev;
+	}
+}
+
 void mSwap(vector<int>& nums, const int& a, const int& b, const int& m)
 {	// swap nums[a, ..., a+m-1] with nums[b, ..., b+m-1]
 	for(int i = 0; i < m; ++i)
@@ -122,12 +161,10 @@ void vector_rotate_withGCD(vector<int>& nums, const int& n)
 			mSwap(nums, p-i, p+j-i, i);
 			j -= i;
 		}
-		inspect<vector<int>>(nums);
 	}
 
 	mSwap(nums, p-i, p, i);
 }
-
 int main()
 {
 	vector<int> nums {1, 2, 3, 4, 5, 6, 7, 8, 9};
