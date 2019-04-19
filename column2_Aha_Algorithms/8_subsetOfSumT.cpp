@@ -66,7 +66,7 @@ bool subsetOfSumT1(vector<int>& nums, const int& k, const int& t)
 	return (accumulate(nums.begin(), nums.begin() + k, 0) <= t);
 }
 
-// solution n^2 ?
+// solution n^k
 void subsetOfSumT2_helper(vector<int>& nums, const int& i, const int& s, const int& count, const int& k, vector<int>& sums)
 {
 	if (count == k)
@@ -100,6 +100,22 @@ bool subsetOfSumT2(vector<int>& nums, const int& k, const int& t)
 	}
 	return false;
 }
+// solution nlogk 
+// this method will be a variation of the n log(n) solution
+// instead of sorting everything inplace
+// we sort only first k (find the smallest k elements)
+
+// solution nk 
+// having time complexity equal to nk means that we go through all 
+// n elements k times, and then we ask ourselves how to find the solution
+// by doing so?
+// the answer would be: just like the solution above, we search for the
+// k smallest elements using linear search
+
+// solution n^2
+// I'm not sure if this is the only approach to achieve this time complexity
+// but if we use a sort algorithm like bubble sort instead of quicksort or mergesort
+// in the first solution, we would end up having a n^2 solution
 int main()
 {
 	vector<int> nums {1,2,0,4};
