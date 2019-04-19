@@ -52,7 +52,7 @@ Can you find natural algorithms to go with those running times?
 bool subsetOfSumT1(vector<int>& nums, const int& k, const int& t)
 {	// determine whether there exists a k-element
 	// subset of the set that sums to at most t
-	if(k > nums.size())
+	if (k > nums.size())
 	{
 		return false;
 	}
@@ -67,6 +67,7 @@ bool subsetOfSumT1(vector<int>& nums, const int& k, const int& t)
 }
 
 // solution n^k
+
 void subsetOfSumT2_helper(vector<int>& nums, const int& i, const int& s, const int& count, const int& k, vector<int>& sums)
 {
 	if (count == k)
@@ -74,39 +75,41 @@ void subsetOfSumT2_helper(vector<int>& nums, const int& i, const int& s, const i
 		sums.push_back(s);
 		return;
 	}
-	else if(i == nums.size())
+	else if (i == nums.size())
 	{
 		return;
 	}
 	subsetOfSumT2_helper(nums, i + 1, s + nums[i], count + 1, k, sums);
 	subsetOfSumT2_helper(nums, i + 1, s, count, k, sums);
 }
+
 bool subsetOfSumT2(vector<int>& nums, const int& k, const int& t)
 {	// brute force
 	// simply try out every possible k element subsets in nums
-	if(k > nums.size())
+	if (k > nums.size())
 	{
 		return false;
 	}
 
 	vector<int> sums;
 	subsetOfSumT2_helper(nums, 0, 0, 0, k, sums);
-	for(auto& s : sums)
+	for (auto& s : sums)
 	{
-		if(s <= t)
+		if (s <= t)
 		{
 			return true;
 		}
 	}
 	return false;
 }
-// solution nlogk 
+
+// solution nlogk
 // this method will be a variation of the n log(n) solution
 // instead of sorting everything inplace
 // we sort only first k (find the smallest k elements)
 
-// solution nk 
-// having time complexity equal to nk means that we go through all 
+// solution nk
+// having time complexity equal to nk means that we go through all
 // n elements k times, and then we ask ourselves how to find the solution
 // by doing so?
 // the answer would be: just like the solution above, we search for the
@@ -119,7 +122,7 @@ bool subsetOfSumT2(vector<int>& nums, const int& k, const int& t)
 
 int main()
 {
-	vector<int> nums {1,2,0,4};
+	vector<int> nums {1, 2, 0, 4};
 	cout << subsetOfSumT1(nums, 3, 2) << '\n';
 	cout << subsetOfSumT2(nums, 3, 2) << '\n';
 
