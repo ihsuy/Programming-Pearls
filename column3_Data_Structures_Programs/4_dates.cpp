@@ -231,7 +231,11 @@ int DayOfTheWeek(const Date& date)
 //given a month and year,
 //produce a calendar for the month as an array of characters
 vector<int> calendar(const int& m, const int& y)
-{
+{   // this function only returns a vector of days in the month
+    // if more information is needed (i.e. day of the week)
+    // you can easily use methods implemented above to get them
+    // and maybe change vector<int> to vector<pair<int, string>> or
+    // any thing you prefer
     vector<int> output;
 
     int days_in_month = DayInMonth(m, y);
@@ -242,6 +246,7 @@ vector<int> calendar(const int& m, const int& y)
 
     return output;
 }
+
 int main()
 {
     Date begin_of_20century(1, 1, 1900);
