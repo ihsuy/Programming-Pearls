@@ -1,0 +1,9 @@
+Dear $1,
+
+How are you? It's me $2.
+Have you heard about $3, which is coming up on $4? 
+It would mean a lot to me if you could make it to $3. 
+Hopefully, I'll see you on $4.
+
+Best regards,
+$2
