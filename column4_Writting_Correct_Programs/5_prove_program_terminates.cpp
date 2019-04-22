@@ -41,6 +41,9 @@ while x != 1 do
 */
 
 // not sure how to prove this
+// this is an well known open problem
+// please check the jupyter note book in this repository
+// for some visualization
 void simulate(int n)
 {
     int i = n;
