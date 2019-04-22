@@ -40,9 +40,11 @@ in the iterative version, and which parts change?
 // except instead of using a while loop that breaks when value is found 
 // or low > high, we recursive calls the function until 
 // we find the value or low > high is true.
-// the invariant for both algorithm is the fact that val is within
-// [low, high]. it keep shrinking down this range by recursively
-// calling itself with a smaller range
+// the invariant for both algorithm is the fact that if val exists in nums,
+// then val must be in the range [low, high]. 
+// it then keep shrinking down this range by recursively
+// calling itself with a smaller range until there's one or zero element
+// in the range
 int BinarySearch(const vector<int>& nums, const int& val,
                  const int& low, const int& high)
 {   
