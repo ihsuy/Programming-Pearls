@@ -60,7 +60,7 @@ string form_letter_generator(const vector<string>& field_values,
 
             i++;
             // extract field index by reading in every
-            // character after '$'
+            // numerical character after '$'
             string field_index_str;
             while (isnumber(schema[i]))
             {
