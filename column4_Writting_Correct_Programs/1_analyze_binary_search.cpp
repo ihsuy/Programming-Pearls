@@ -34,7 +34,7 @@ mathematics, can you formalize the proof in a logical system?
 */
 
 // do binary search for "val" in nums from left to right inclusively
-// Assume nums is sorted
+// Assume nums is sorted in ascending order
 int BinarySearch(const vector<int>& nums, const int& val, const int& left, const int& right)
 {
     assert(left >= 0 and left <= right);
