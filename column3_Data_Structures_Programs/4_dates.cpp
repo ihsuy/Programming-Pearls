@@ -37,10 +37,9 @@ given a date, return its day of the week; given a month and year,
 produce a calendar for the month as an array of characters.
 */
 
-// no set to const since leap year has 29 days in feb
 // index starting from 1 (days in jan),
 // 0 index shouldn't be accessed
-vector<int> day_in_month
+const vector<int> day_in_month /*common year*/
 {
     -1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 };
@@ -175,7 +174,7 @@ int DistanceBetweenDays(const Date& date1, const Date& date2)
 
 int main()
 {
-    Date begin_of_20century(1, 1, 1900);
+    Date begin_of_20century(1, 1, 2000);
     Date begin_of_21century(1, 1, 2000);
 
     cout << DistanceBetweenDays(begin_of_20century, begin_of_21century) << endl;
