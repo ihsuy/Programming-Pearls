@@ -78,16 +78,16 @@ double fifthOcurrence(const double& a1, const double& a2,
 {
 	return c1 * a4 + c2 * a3 + c3 * a2 + c4 * a1 + c5;
 }
-// the program above may looks simple(??)
-// but its actually horribly unfriendly to its users
-// imagine when you got this function and have to insert all nine parameters
-// using your hand like this:
+// the program above is horribly user unfriendly
+// first to insert all nine parameters like this:
 // fifthOccurence(12.24, 219.12, 9.89, 82.48, 12.24, 219.12, 55.9, 2.8, 19.24)
-// do you still remember where begins your first c1 ?
-// ok if you say you will use named variables but then you will need 9 new lines
-// just initialize your variables...
-// also what if your boss want you to make it a function that calculates
-// the 100th ocurrence? you will have 201 variables to create then
+// can be confusing and error proned, 
+// i.e. its hard to tell where begins the value of c1
+// secondly even if named variables are used, 9 new lines has to be added
+// just for initializing variables
+// In addition, maintanance of this code or
+// modification for higher order ocurrence would be difficult
+// 100th ocurrence would require 201 arguments
 
 // below is a function does the job calculating occurence of any order using array
 double nthLinearRecurrence(const vector<double>& a, const vector<double>& c)
