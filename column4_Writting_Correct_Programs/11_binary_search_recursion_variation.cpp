@@ -52,6 +52,21 @@ int binarysearch(const vector<int>& x, const int& n)
     }
 }
 
+/*
+comment
+
+This is pretty much the same problem, but with a tricky declaration restriction
+I tackle this problem using a static variable and use a trimmed version of the 
+current array as the input array feed to the next recursion.
+
+I could, as well, use couple of global variables to keep track of low and high,
+but that approach would have been equavalent to adding more parameters to the 
+function which makes this problem less interesting.
+
+a static variable, however, exists inside of the function and belongs to it
+i guess i can use it
+*/
+
 int main()
 {
     vector<int> v{2, 2, 3, 5, 6, 7, 8, 12, 129};
@@ -59,6 +74,5 @@ int main()
     {
         cout << "found " << i << " at: " << binarysearch(v, i) << '\n';
     }
-
     return 0;
 }
