@@ -35,7 +35,8 @@ mathematics, can you formalize the proof in a logical system?
 
 // do binary search for "val" in nums from left to right inclusively
 // Assume nums is sorted in ascending order
-int BinarySearch(const vector<int>& nums, const int& val, const int& left, const int& right)
+int BinarySearch(const vector<int>& nums, const int& val,
+                 const int& left, const int& right)
 {
     assert(left >= 0 and left <= right);
     assert(right < nums.size());
@@ -101,7 +102,7 @@ int BinarySearch(const vector<int>& nums, const int& val, const int& left, const
 // the program won't compile.
 
 // 4. variables out of declared range
-// we assert left to be no smaller than 0 
+// we assert left to be no smaller than 0
 // and right to be no smaller than left
 // thus right can't be smaller than 0
 
@@ -113,10 +114,10 @@ int BinarySearch(const vector<int>& nums, const int& val, const int& left, const
 // in the process of search, the values thats changing are
 // mid, low, high
 // will these number exceeds [left, right] ?
-// YES, it will happen only when we search for value thats 
-// larger than nums.back() or smaller than nums.front(), 
+// YES, it will happen only when we search for value thats
+// larger than nums.back() or smaller than nums.front(),
 // and low will become right+1 and and high will become left-1 respectively
-// but will this cause undefined behaviour? 
+// but will this cause undefined behaviour?
 // NO, since either case will cause low > high and immediently breaks the while
 // loop and -1 is returned indicating no found which is correct
 

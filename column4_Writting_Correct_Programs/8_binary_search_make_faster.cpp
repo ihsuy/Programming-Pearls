@@ -1,0 +1,109 @@
+#include <iostream>
+#include <vector>
+#include <unordered_set>
+#include <unordered_map>
+#include <set>
+#include <map>
+#include <list>
+#include <chrono>
+#include <random>
+#include <algorithm>
+#include <math.h>
+#include <queue>
+#include <stack>
+#include <sstream>
+#include <utility>
+#include <bitset>
+#include <fstream>
+#include <string>
+
+typedef long long ll;
+inline int two(int n) { return 1 << n; }
+inline int test(int n, int b) { return (n >> b) & 1; }
+inline void set_bit(int & n, int b) { n |= two(b); }
+inline void unset_bit(int & n, int b) { n &= ~two(b); }
+inline int last_bit(int n) { return n & (-n); }
+inline int ones(int n) { int res = 0; while (n && ++res) n -= n & (-n); return res; }
+template<typename T>
+inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+
+/////////////////////////////////////////////////////////////
+using namespace std;
+
+/*
+Binary search is fundamentally faster than sequential search:
+to search an n-element table, it makes roughly log2 n comparisons
+while sequential search makes roughly n/2.
+While it is often fast enough, in a few cases binary search
+must be made faster yet. Although you can’t reduce the
+logarithmic number of comparisons made by the algorithm,
+can you rewrite the binary search code to be faster?
+For definiteness, assume that you are to search a sorted
+table of n = 1000 integers.
+*/
+
+int BinarySearch(const vector<int>& nums, const int& val)
+{
+    int low = 0, high = nums.size() - 1;
+
+    while (low <= high)
+    {
+        long long mid = (low + high) >> 1;
+        int n = nums[mid];
+
+        if (n == val)
+        {
+            return mid;
+        }
+
+        if (n > val)
+        {
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+
+    return -1;
+}
+
+long timeit(int(bs)(const vector<int>&, const int&),
+            const vector<int>& nums, const int& val, const bool& verbose = true)
+{
+    auto t1 = chrono::high_resolution_clock::now();
+    bs(nums, val);
+    auto t2 = chrono::high_resolution_clock::now()-t1;
+    long t_nano = chrono::duration_cast<chrono::nanoseconds>(t2).count();
+    if(verbose) cout << "time: " << t_nano << " nanoseconds\n";
+    return t_nano;
+}
+
+int main()
+{
+    const int arr_size = 1000;
+    const int max_num = 80000;
+
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+    vector<int> nums;
+    for (int i = 0; i < arr_size; ++i)
+    {
+        nums.push_back(rand() % max_num);
+    }
+    sort(nums.begin(), nums.end());
+
+    const int nTest = 100000;
+    const int verbose = false;
+
+    long long time_nano = 0;
+    for(int i = 0; i < nTest; ++i)
+    {
+        int val = rand()%max_num;
+        time_nano += timeit(BinarySearch, nums, val, verbose);
+    }
+    cout << "avg: " << (double)time_nano/nTest << '\n';
+
+    return 0;
+}
