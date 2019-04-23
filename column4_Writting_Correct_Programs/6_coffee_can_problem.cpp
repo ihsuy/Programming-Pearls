@@ -47,48 +47,58 @@ the color of the final remaining bean as a function
 of the numbers of black and white beans originally in the can?
 */
 
+// simulate the process described in this problem
+// return value indicates the color of the last bean
+// true: black ; false: white
+// analysis for why this program terminates will be after
+// the code
 bool CoffeeCanProblem_simulation(int nBlack_bean, int nWhite_bean)
 {
     int bean_pool_size = nBlack_bean + nWhite_bean;
     while (bean_pool_size != 1)
     {
-        cout << "black: " << nBlack_bean << " white: " << nWhite_bean << '\n';
         bool isBlack1 = ((rand() % bean_pool_size) < nBlack_bean);
         bool isBlack2 = ((rand() % bean_pool_size) < nBlack_bean);
 
         if(nWhite_bean < 2 and not isBlack1 and not isBlack2)
-        {
+        {   // when there're fewer than 2 white beans left
+            // we can't draw 2 white beans, so one of them has
+            // to be black
             isBlack1 = true;
             if(nWhite_bean == 0)
-            {
+            {   // if there was no white beans at all
+                // then we can only choose black beans
+                // Note: we know that we have at least 2 black beans left
+                // at this point, because the while loop condition
                 isBlack2 = true;
             }
         }
         else if(nBlack_bean < 2 and isBlack1 and isBlack2)
-        {
+        {   // similar to above
             isBlack1 = false;
             if(nBlack_bean == 0)
             {
                 isBlack2 = false;
             }
         }
-        
+
         if (not isBlack1 ^ isBlack2)
         {   // same bean
-            cout << "same beans\n";
             if (isBlack1)
             {
+                cout << "Two black beans, throw 2 black beans and add 1 black bean\n";
                 nBlack_bean--;
             }
             else
             {
+                cout << "Two white beans, throw 2 white beans and add 1 black bean\n";
                 nWhite_bean -= 2;
                 nBlack_bean++;
             }
         }
         else
         {
-            cout << "different beans\n";
+            cout << "different beans, throw black bean and return white bean\n";
             nBlack_bean--;
         }
 
@@ -97,6 +107,8 @@ bool CoffeeCanProblem_simulation(int nBlack_bean, int nWhite_bean)
     cout << "black: " << nBlack_bean << " white: " << nWhite_bean << '\n';
     return nBlack_bean == 1;
 }
+
+
 int main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
