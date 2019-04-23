@@ -82,15 +82,15 @@ while i < n do
 // then check for i from 1 to x.size()-1
 // which is total of x.size() checks so we did check every value in x
 // However, this function assumes x.size() > 0 and won't handle empty
-// inputs. 
+// inputs.
 // next lets look at whether if the return value is really the maximum
-// value in x. since we begin with the first value and will examine 
+// value in x. since we begin with the first value and will examine
 // every value in the array and compare it with the current max
 // assume this is incorrect, i.e. there's a value M in x thats larger than
 // return value max_val, M > max_val and M is the true max value in x.
 // we also know if M, at one point of time, occupied the value of max_val
 // then it's impossible to later assign max_val to a value thats smaller than M.
-// 
+//
 // then since we've seen M before in the loop, then comparison M > max_val is
 // performed, but M never successfully replaced max_val which means max_val
 // at that point was larger than M but M is said to be the true max,
@@ -100,13 +100,13 @@ int MaxumumValue(const vector<int>& x)
 {
     int max_val = x[0];
     int i = 1;
-    while(i < x.size())
+    while (i < x.size())
     {
-        if(x[i] > max_val)
+        if (x[i] > max_val)
         {
             max_val = x[i];
         }
-        i = i+1;
+        i = i + 1;
     }
     return max_val;
 }
@@ -123,6 +123,55 @@ if i >= n
 else
     p = i
 */
+
+// First look at i's range
+// i begin with value 0 and will be only incremented in the while loop
+// since we perform the check (i < x.size()) before accessing x[i]
+// i will not exceed the boundary of x
+
+// Next check logical parts' behaviour
+// the result is determined by the last if statement
+// if(i >= x.size()) then we claim there's no such value exists
+// by returning -1
+// otherwise we claim that we found it and return i
+// note the value of i that at this point
+// must violates the while loop's condition
+// namely, i must be either
+// no smaller than x.size() or
+// pointing at t in x
+// we know that if i>=x.size() is false then x[i] == t must true
+// and vise versa
+// and that's why we can conclude the result only after one check
+
+// check correctness of the result
+// as concluded above, i>=x.size() implies x[i] != t was true
+// in the whole process, that means we've never seen t in x
+// and returning -1 is correct
+
+// for the case when x[i] == t and we return i
+// lets assume this is incorrect, i.e. x[j] == t for some j < i
+// j belongs to the range [0, i)
+// however, since we've checked, at this point, x[i] for i in [0, i)
+// none of x[i] == t. this is a contradiction.
+// therefore the result is correct
+
+int FirstOccurenceOf(const int& t, const vector<int>& x)
+{
+    int i = 0;
+    while (i < x.size() and x[i] != t)
+    {
+        i = i + 1;
+    }
+
+    if (i >= x.size())
+    {
+        return -1;
+    }
+    else
+    {
+        return i;
+    }
+}
 
 /*
 This program computes the nth power of x in time proportional
@@ -142,11 +191,104 @@ function exp(x, n)
 
 */
 
+// the assertion guarantee n is a positive integer
+// then the case 0 is handled correctly
+// we are left with n in the range [1, max]
+// of course this program if x and n gets large enough
+// it will cause data type to overflow quickly
+// but thats not going to be solved unless we create a mechanism for
+// extra large numbers, so lets put that aside.
+// observe the behavior of the last 2 code blocks
+// the function is actually probing 1 value for n at a time
+// until n becomes even, it cuts size of n by half then continue probing
+// since there're roughly half odd and half even in any range of
+// consecutive integers with size >= 2, the cutting off by half will happens
+// at least roughly half of the time and this makes the algorithm logn
+// the correctness is obvious because
+// x^n is equal to (x^(n/2))^2 if n is even and
+// x^n is always equal to x*x^(n-1)
+// either division by 2 or substraction by 1 will cause n to be smaller
+// and finally reaches 0 which is our termination condition for the recursion
+int Exp(const int& x, const int& n)
+{
+    assert(n >= 0);
+
+    if (n == 0)
+    {
+        return 1;
+    }
+    else if (n % 2 == 0)
+    {
+        auto v = Exp(x, n >> 1);
+        return v * v;
+    }
+    else
+    {
+        return x * Exp(x, n - 1);
+    }
+}
+
+// Addtional problem:
+// implement an iterative version of the Exp function
+int Exp_iterative(const int& x, int n)
+{
+    assert(n >= 0);
+    // use stacks since we have to do every thing backward later
+    stack<int> will_square;
+    stack<int> will_mul_x;
+
+    while (n != 0)
+    {   // find and save exactly what to do at each point
+        // where the value of n will be used as a key
+        // to later identify which operation should
+        // be performed earlier
+        // since dividing n by 2 and substract by 1 always produce
+        // different results unless n is 1 or 0
+        // but a positive n has to be 1 before becoming 0 in either case
+        // and the while loop terminates when n is 1 we we are good
+        if (n % 2 == 0)
+        {   
+            will_square.push(n);
+            n >>= 1;
+        }
+        else
+        {
+            will_mul_x.push(n);
+            n--;
+        }
+    }
+
+    // now we have the a detailed manual called 
+    // "How to perform exponential in log n time for x and n"
+    // we just follow it
+    // smaller top of 2 stacks will be handled first
+    // since it came later in the process above
+    // we keep performing 2 different operation until
+    // there's not more number left in both stacks
+    int result = 1;
+    while (not will_square.empty() or not will_mul_x.empty())
+    {
+        if (not will_mul_x.empty() and
+                (will_square.empty() or will_mul_x.top() < will_square.top()))
+        {
+            result *= x;
+            will_mul_x.pop();
+        }
+        else if (not will_square.empty() and
+                 (will_mul_x.empty() or will_mul_x.top() > will_square.top()))
+        {
+            result *= result;
+            will_square.pop();
+        }
+    }
+    // done
+    return result;
+}
 
 
 int main()
 {
-
-
+    cout << Exp(3, 8) << '\n';
+    cout << Exp_iterative(3, 8) << '\n';
     return 0;
 }
