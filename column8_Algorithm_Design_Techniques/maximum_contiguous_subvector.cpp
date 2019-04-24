@@ -117,16 +117,26 @@ int mcs_linear(const vector<int>& nums)
 // my optimal linear solution
 // still O(n) but with smaller constant multiplier
 // and O(1) space
+// I think there's no better solution 
+// than this one, algorithmically speaking
+// since this solution only look at every element once
+// and thats the best conceivable time we can get
+// this solution is about 10 time faster than mcs_linear
+// the core idea is when ever we see a negative number
+// we need to decide whether its worth it to include it
 int mcs_linear2(const vector<int>& nums)
 {
     int max_sum = 0;
 
     int runningSum = 0;
+    int pre_rs = 0;
+
     for (int i = 0; i < nums.size(); ++i)
-    {
+    {   
         if (nums[i] < 0)
         {
-            int pre_rs = runningSum;
+            pre_rs = runningSum;
+
             while (nums[i] < 0 and i < nums.size())
             {
                 runningSum += nums[i];
@@ -135,7 +145,6 @@ int mcs_linear2(const vector<int>& nums)
 
             if (i == nums.size())
             {
-                max_sum = max(max_sum, pre_rs);
                 break;
             }
 
@@ -149,8 +158,8 @@ int mcs_linear2(const vector<int>& nums)
 
         runningSum += nums[i];
     }
-    max_sum = max(max_sum, runningSum);
-    return max_sum;
+
+    return max(max_sum, max(runningSum, pre_rs));
 }
 
 pair<unsigned long, unsigned long>
@@ -170,7 +179,7 @@ int main()
     vector<int> nums2{ -1, -1, -1000, 1};
 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    const int& sz = 50000;
+    const int& sz = 2000;
     vector<int> nums;
     for (int i = 0; i < sz; ++i)
     {
@@ -179,12 +188,16 @@ int main()
     //inspect<vector<int>>(nums);
 
     const int nTest = 1000;
+    unsigned long long accumulate_t3 = 0, accumulate_t4 = 0;
     for (int i = 0; i < nTest; ++i)
     {
         //auto res1 = run(mcs_bruteForce, nums);
         //auto res2 = run(mcs_bruteForce2, nums);
         auto res3 = run(mcs_linear, nums);
         auto res4 = run(mcs_linear2, nums);
+
+        accumulate_t3 += res3.first;
+        accumulate_t4 += res4.first;
 
         // cout << "time spent: \n";
         // cout << res1.first << '\n';
@@ -197,5 +210,9 @@ int main()
         assert(res3.second == res4.second);
     }
 
+    cout << "successfully completed " << nTest << " test cases\n";
+    cout.precision(10);
+    cout << "avg time spent for linear1: " << (double)accumulate_t3 / nTest << '\n';
+    cout << "avg time spent for linear2: " << (double)accumulate_t4 / nTest << '\n';
     return 0;
 }
