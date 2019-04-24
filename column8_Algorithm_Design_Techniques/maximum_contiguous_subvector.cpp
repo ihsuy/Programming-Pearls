@@ -116,8 +116,18 @@ int mcs_runningSum(const vector<int>& nums)
 
 int main()
 {
-    vector<int> nums{31, -41, 59, 26, -53, 58, 97, -93, -23, 84};
+    vector<int> nums3{31, -41, 59, 26, -53, 58, 97, -93, -23, 84};
     vector<int> nums2{-1,-1,-1000,1};
+
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+    const int& sz = 500;
+    vector<int> nums;
+    for(int i = 0; i < sz; ++i)
+    {
+        nums3.push_back(rand()%sz - sz/2);
+    }
+    
+
     cout << mcs_bruteForce(nums) << endl;
     cout << mcs_bruteForce2(nums) << endl;
     cout << mcs_runningSum(nums) << endl;
