@@ -89,7 +89,7 @@ int mcs_bruteForce2(const vector<int>& nums)
 }
 
 // my O(n) solution that requires doing preprocess before search
-// but also uses O(n) space complexity
+// but uses O(n) space complexity
 int mcs_linear(const vector<int>& nums)
 {
     vector<int> runningSums;
@@ -117,7 +117,7 @@ int mcs_linear(const vector<int>& nums)
 // my optimal linear solution
 // still O(n) but with smaller constant multiplier
 // and O(1) space
-// I think there's no better solution 
+// I think there's no better solution
 // than this one, algorithmically speaking
 // since this solution only look at every element once
 // and thats the best conceivable time we can get
@@ -129,13 +129,15 @@ int mcs_linear2(const vector<int>& nums)
     int max_sum = 0;
 
     int runningSum = 0;
-    int pre_rs = 0;
 
     for (int i = 0; i < nums.size(); ++i)
-    {   
+    {
         if (nums[i] < 0)
         {
-            pre_rs = runningSum;
+            if (max_sum < runningSum)
+            {
+                max_sum = runningSum;
+            }
 
             while (nums[i] < 0 and i < nums.size())
             {
@@ -152,15 +154,54 @@ int mcs_linear2(const vector<int>& nums)
             {
                 runningSum = 0;
             }
-
-            max_sum = max(max_sum, pre_rs);
         }
 
         runningSum += nums[i];
     }
 
-    return max(max_sum, max(runningSum, pre_rs));
+    return max(max_sum, runningSum);
 }
+
+// a simplified version of linear2
+// this algorithm is suggested by the book
+// and is esstentially identical to my second linear solution
+// but a little bit slower
+int mcs_linear3(const vector<int>& nums)
+{
+    int max_sum = 0;
+    int runningSum = 0;
+    for (int i = 0; i < nums.size(); ++i)
+    {
+        runningSum = max(0, runningSum);
+        max_sum = max(max_sum, runningSum);
+        runningSum += nums[i];
+    }
+    return (max_sum > runningSum) ? max_sum : runningSum;
+}
+// but linear3 uses significantly less variables than linears
+// and much cleaner logic it should be faster
+// so actually the source of slowness came from
+// repeatedly calling the max function and assign the value
+// so i modified it to
+int mcs_linear3_1(const vector<int>& nums)
+{
+    int max_sum = 0;
+    int runningSum = 0;
+    for (int i = 0; i < nums.size(); ++i)
+    {
+        if (runningSum < 0)
+        {
+            runningSum = 0;
+        }
+        if (max_sum < runningSum)
+        {
+            max_sum = runningSum;
+        }
+        runningSum += nums[i];
+    }
+    return (max_sum > runningSum) ? max_sum : runningSum;
+}
+// this final solution successfully 2.2 x speeded up linear2 solution
 
 pair<unsigned long, unsigned long>
 run(int(mcs)(const vector<int>&), const vector<int>& nums)
@@ -171,7 +212,6 @@ run(int(mcs)(const vector<int>&), const vector<int>& nums)
     auto t = chrono::duration_cast<chrono::nanoseconds>(t2).count();
     return {t, res};
 }
-
 
 int main()
 {
@@ -188,17 +228,23 @@ int main()
     //inspect<vector<int>>(nums);
 
     const int nTest = 1000;
-    unsigned long long accumulate_t3 = 0, accumulate_t4 = 0;
+    unsigned long long accumulate_t3 = 0,
+                       accumulate_t4 = 0,
+                       accumulate_t5 = 0,
+                       accumulate_t6 = 0;
     for (int i = 0; i < nTest; ++i)
     {
         //auto res1 = run(mcs_bruteForce, nums);
         //auto res2 = run(mcs_bruteForce2, nums);
         auto res3 = run(mcs_linear, nums);
         auto res4 = run(mcs_linear2, nums);
+        auto res5 = run(mcs_linear3, nums);
+        auto res6 = run(mcs_linear3_1, nums);
 
         accumulate_t3 += res3.first;
         accumulate_t4 += res4.first;
-
+        accumulate_t5 += res5.first;
+        accumulate_t6 += res6.first;
         // cout << "time spent: \n";
         // cout << res1.first << '\n';
         //cout << res2.first << '\n';
@@ -208,11 +254,15 @@ int main()
         //assert(res1.second == res2.second);
         assert(res3.second == res3.second);
         assert(res3.second == res4.second);
+        assert(res3.second == res5.second);
+        assert(res3.second == res6.second);
     }
 
     cout << "successfully completed " << nTest << " test cases\n";
     cout.precision(10);
     cout << "avg time spent for linear1: " << (double)accumulate_t3 / nTest << '\n';
     cout << "avg time spent for linear2: " << (double)accumulate_t4 / nTest << '\n';
+    cout << "avg time spent for linear3: " << (double)accumulate_t5 / nTest << '\n';
+    cout << "avg time spent for linear3.5: " << (double)accumulate_t6 / nTest << '\n';
     return 0;
 }
