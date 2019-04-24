@@ -88,8 +88,9 @@ int mcs_bruteForce2(const vector<int>& nums)
     return max_sum;
 }
 
-// my O(n) solution that do preprocess once before search
-int mcs_runningSum(const vector<int>& nums)
+// my O(n) solution that requires doing preprocess before search
+// but also uses O(n) space complexity
+int mcs_linear(const vector<int>& nums)
 {
     vector<int> runningSums;
     vector<int> offsets;
@@ -113,6 +114,45 @@ int mcs_runningSum(const vector<int>& nums)
     return max_sum;
 }
 
+// my optimal linear solution
+// still O(n) but with smaller constant multiplier
+// and O(1) space
+int mcs_linear2(const vector<int>& nums)
+{
+    int max_sum = 0;
+
+    int runningSum = 0;
+    for (int i = 0; i < nums.size(); ++i)
+    {
+        if (nums[i] < 0)
+        {
+            int pre_rs = runningSum;
+            while (nums[i] < 0 and i < nums.size())
+            {
+                runningSum += nums[i];
+                i++;
+            }
+
+            if (i == nums.size())
+            {
+                max_sum = max(max_sum, pre_rs);
+                break;
+            }
+
+            if (runningSum < 0)
+            {
+                runningSum = 0;
+            }
+
+            max_sum = max(max_sum, pre_rs);
+        }
+
+        runningSum += nums[i];
+    }
+    max_sum = max(max_sum, runningSum);
+    return max_sum;
+}
+
 pair<unsigned long, unsigned long>
 run(int(mcs)(const vector<int>&), const vector<int>& nums)
 {
@@ -130,23 +170,32 @@ int main()
     vector<int> nums2{ -1, -1, -1000, 1};
 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    const int& sz = 2000;
+    const int& sz = 50000;
     vector<int> nums;
     for (int i = 0; i < sz; ++i)
     {
         nums.push_back(rand() % sz - sz / 2);
     }
+    //inspect<vector<int>>(nums);
 
-    auto res1 = run(mcs_bruteForce, nums);
-    auto res2 = run(mcs_bruteForce2, nums);
-    auto res3 = run(mcs_runningSum, nums);
+    const int nTest = 1000;
+    for (int i = 0; i < nTest; ++i)
+    {
+        //auto res1 = run(mcs_bruteForce, nums);
+        //auto res2 = run(mcs_bruteForce2, nums);
+        auto res3 = run(mcs_linear, nums);
+        auto res4 = run(mcs_linear2, nums);
 
-    cout << "time spent: \n";
-    cout << res1.first << '\n';
-    cout << res2.first << '\n';
-    cout << res3.first << '\n';
-
-    assert(res1.second == res2.second and res1.second == res3.second);
+        // cout << "time spent: \n";
+        // cout << res1.first << '\n';
+        //cout << res2.first << '\n';
+        // cout << res3.first << '\n';
+        // cout << res4.first << '\n';
+        //cout << res2.second << " " << res4.second << '\n';
+        //assert(res1.second == res2.second);
+        assert(res3.second == res3.second);
+        assert(res3.second == res4.second);
+    }
 
     return 0;
 }
