@@ -127,7 +127,6 @@ int mcs_linear(const vector<int>& nums)
 int mcs_linear2(const vector<int>& nums)
 {
     int max_sum = 0;
-
     int runningSum = 0;
 
     for (int i = 0; i < nums.size(); ++i)
@@ -219,7 +218,7 @@ int main()
     vector<int> nums2{ -1, -1, -1000, 1};
 
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    const int& sz = 2000;
+    const int& sz = 10000;
     vector<int> nums;
     for (int i = 0; i < sz; ++i)
     {
