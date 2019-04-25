@@ -95,6 +95,7 @@ window maxWindow(const vector<vector<int>>& m)
 window maxWindow2(const vector<vector<int>>& m)
 {
     int n_row = m.size(), n_col = m[0].size();
+
     window max_window;
     // for every possible window size
     for (int r = 1; r <= n_row; ++r)
@@ -139,7 +140,7 @@ window maxWindow2(const vector<vector<int>>& m)
                         window_sum += col_add;
                     }
                 }
-                // reset window
+                // reset window to left most position
                 window_sum = pre_window;
 
                 if (wr != n_row - r)
@@ -165,6 +166,72 @@ window maxWindow2(const vector<vector<int>>& m)
     return max_window;
 }
 
+// an improved version on maxWindow2
+// which reduced redundant logic
+// and improved speed for calculating
+// sum of the leftmost initial window
+window maxWindow3(const vector<vector<int>>& m)
+{
+    int n_row = m.size(), n_col = m[0].size();
+
+    window max_window;
+
+    vector<vector<int>> initial_sums{m.size() + 1, vector<int>(m[0].size(), 0)};
+
+    // for every possible window size
+    for (int r = 1; r <= n_row; ++r)
+    {
+        initial_sums[r][0] = initial_sums[r - 1][0] + m[r - 1][0];
+        for (int i = 1; i < initial_sums[0].size(); ++i)
+        {
+            initial_sums[r][i] = m[r - 1][i]
+                                 + initial_sums[r - 1][i]
+                                 + initial_sums[r][i - 1]
+                                 - initial_sums[r - 1][i - 1];
+        }
+
+        for (int c = 1; c <= n_col; ++c)
+        {   // move window to every possible position
+            // and calculate initial sum of the window
+            int window_sum = initial_sums[r][c - 1];
+
+            for (int wr = 0; wr < n_row - r + 1; ++wr)
+            {
+                int pre_window = window_sum;
+
+                for (int wc = 0; wc < n_col - c + 1; ++wc)
+                {
+                    if (window_sum > max_window.sum)
+                    {
+                        max_window.update({wr, wc}, r, c, window_sum);
+                    }
+
+                    if (wc != n_col - c)
+                    {   // substract first column from window
+                        // add next column of window
+                        for (int i = 0; i < r; ++i)
+                        {
+                            window_sum -= m[wr + i][wc] - m[wr + i][wc + c];
+
+                        }
+                    }
+                }
+                // reset window to left most position
+                window_sum = pre_window;
+
+                if (wr != n_row - r)
+                {   // substract first row from the initial window
+                    for (int i = 0; i < c; ++i)
+                    {
+                        window_sum -= m[wr][i] -  m[wr + r][i];
+                    }
+                }
+            }
+        }
+    }
+    return max_window;
+}
+
 vector<vector<int>> TestCaseGenerator(const int& h, const int& w, const int& n)
 {
     vector<vector<int>> test_case;
@@ -173,7 +240,7 @@ vector<vector<int>> TestCaseGenerator(const int& h, const int& w, const int& n)
         vector<int> row;
         for (int c = 0; c < w; ++c)
         {
-            row.push_back(rand()%n - n/2);
+            row.push_back(rand() % n - n / 2);
         }
         test_case.push_back(row);
     }
@@ -195,12 +262,36 @@ void run(window(f)(const vector<vector<int>>&), const vector<vector<int>>& m)
 int main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    const int h = 50;
-    const int w = 50;
+    const int h = 40;
+    const int w = 60;
     const int n = 100;
     auto m = TestCaseGenerator(h, w, n);
 
     run(maxWindow, m);
     run(maxWindow2, m);
+    run(maxWindow3, m);
+
+    /*
+    test result: 
+    
+    ------------
+    maxWindow
+    result: (8, 1) height: 26, width: 17, sum: 1179
+    time spent: 2072725 microseconds
+    ------------
+
+    ------------
+    maxWindow2
+    result: (8, 1) height: 26, width: 17, sum: 1179
+    time spent: 214410 microseconds
+    ------------
+    
+    ------------
+    maxWindow3
+    result: (8, 1) height: 26, width: 17, sum: 1179
+    time spent: 189274 microseconds
+    ------------
+    */
     return 0;
 }
+
