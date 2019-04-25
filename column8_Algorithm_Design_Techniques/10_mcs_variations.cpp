@@ -42,7 +42,8 @@ closest to a given real number t?
 
 // find the subvector with the sum closest to zero
 pair<int, int> SubvectorClosestToZero(const vector<int>& nums)
-{
+{   // first calculate the cumulative sum by running through the
+    // array once and call it runningSums
     vector<pair<int, int>> runningSums{{0, -1}};
     for (int i = 1; i < nums.size(); ++i)
     {
@@ -50,6 +51,7 @@ pair<int, int> SubvectorClosestToZero(const vector<int>& nums)
     }
     sort(runningSums.begin(), runningSums.end());
 
+    // then, find the closest 2 number in the runningSums
     pair<int, int> result;
     int min_val = INT_MAX;
     for (int i = 1; i < runningSums.size(); ++i)
@@ -68,6 +70,9 @@ pair<int, int> SubvectorClosestToZero(const vector<int>& nums)
 
 
 // find the subvector with the sum closest to a given real number N
+// we are asssigned to basically the same job as before,
+// however we make it more general: in stead of searching for a sum
+// that's the closet to 0 we look for the sum that equals N
 int ABS(const int& n)
 {
     return n<0?-n:n;
@@ -86,7 +91,8 @@ pair<int, int> SubvectorClosestTo(const int& N, const vector<int>& nums)
     int min_val = INT_MAX;
 
     for (int i = 1; i < runningSums.size(); ++i)
-    {
+    {   // only part that's different from the previous solution
+        // is here
         int temp = ABS(runningSums[i].first - runningSums[i - 1].first - N);
         if (temp < min_val)
         {
