@@ -171,9 +171,8 @@ int mcs_linear3(const vector<int>& nums)
     int runningSum = 0;
     for (int i = 0; i < nums.size(); ++i)
     {
-        runningSum = max(0, runningSum);
+        runningSum = max(0, runningSum+nums[i]);
         max_sum = max(max_sum, runningSum);
-        runningSum += nums[i];
     }
     return (max_sum > runningSum) ? max_sum : runningSum;
 }
@@ -200,8 +199,10 @@ int mcs_linear3_1(const vector<int>& nums)
     }
     return (max_sum > runningSum) ? max_sum : runningSum;
 }
-// this final solution successfully 2.2 x speeded up linear2 solution
+// this final solution successfully achieved a 2.2 x speed up 
+// of linear2 and a 3.1x speed of linear3
 
+// wrapper that does timming
 pair<unsigned long, unsigned long>
 run(int(mcs)(const vector<int>&), const vector<int>& nums)
 {
