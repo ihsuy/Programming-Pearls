@@ -167,17 +167,16 @@ int bs4(const vector<int>& nums, const int& target)
         return -1;
     }
     return pos;
-    return 0;
+}
 
-}
-int bs5(const vector<int>& nums, const int& target)
-{
-    return 0;
-}
-int bs6(const vector<int>& nums, const int& target)
-{
-    return 0;
-}
+// int bs5(const vector<int>& nums, const int& target)
+// {
+//     return 0;
+// }
+// int bs6(const vector<int>& nums, const int& target)
+// {
+//     return 0;
+// }
 
 template<typename container_type>
 pair<long long, int> profiler(int(bs)(container_type, const int&),
@@ -230,7 +229,7 @@ int main()
     // test
     const int nTest = 500000;
 
-    long long t1_sum = 0, t2_sum = 0, t3_sum = 0, t4_sum = 0;
+    long long t1_sum = 0, t2_sum = 0, t3_sum = 0/*, t4_sum = 0*/;
 
     for (int i = 0; i < nTest; ++i)
     {
