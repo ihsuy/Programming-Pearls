@@ -29,6 +29,15 @@ How can sentinels be used in a program
 to find the maximum element in an array?
 */
 
+/*
+result on size 100000 array
+average after 100 tests
+
+naive    maxElement1 average time: 365587 nanoseconds
+sentinel maxElement2 average time: 203024
+stl      maxElement3 average time: 1085066
+*/
+
 // naive method
 // find the largest element in input
 // assume input is non-empty
@@ -71,6 +80,12 @@ int maxElement2(vector<int>& nums)
     return max_val;
 }
 
+// stl max_element function wrapper
+// the performance result is that
+// this function is the slowest
+// i assume the generic features (custom comp func)
+// and the fact that this function actually return a iterator
+// slows it down
 int maxElement3(vector<int>& nums)
 {
     return *max_element(nums.begin(), nums.end());
