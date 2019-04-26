@@ -52,6 +52,10 @@ int ssearch2(vector<int>& nums, const int& target, const int& size)
     // so to combine the "out of bound" and "found the target"
     // 2 conditions into 1 condition
     // then apply one extra check after the loop is terminated
+
+    // hold the size+1 value and modify it to a terminating value
+    // int prev = nums[size];
+
     nums[size] = target;
 
     int i = 0;
@@ -63,6 +67,9 @@ int ssearch2(vector<int>& nums, const int& target, const int& size)
             break;
         }
     }
+    
+    // put the size+1 value back
+    // nums[size] = prev;
 
     if (i == size)
     {   // for loop terminated because of out of bound?
