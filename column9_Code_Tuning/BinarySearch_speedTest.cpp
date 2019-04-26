@@ -252,9 +252,9 @@ int main()
         {
             n++;
         }
-        if (rand() % 4)
+        if (rand() % 15)
         {   // occasionally introduce big gaps
-            n += 1000;
+            n += 10;
         }
         nums.push_back(n);
     }

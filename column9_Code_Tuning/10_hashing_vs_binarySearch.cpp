@@ -38,8 +38,6 @@ int binarySearch(const vector<int>& nums, const int& target)
     int i = (nums.size() - 1) >> 1;
     for (; i > 0; i >>= 1)
     {
-        cout << i << '\n';
-        cout << "n: " << nums[low + i] << " low: " << low <<  '\n';
         if (nums[low + i] < target)
         {
             low = low + i + 1;
@@ -81,7 +79,7 @@ int main()
 {
     // create test vector
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    const int sz = 100;
+    const int sz = 100000;
     const int n_lower = -sz / 10;
     vector<int> nums;
 
@@ -91,17 +89,16 @@ int main()
         {
             n++;
         }
-        // if (rand() % 4)
-        // {   // occasionally introduce big gaps
-        //     n += 1000;
-        // }
+        if (rand() % 4)
+        {   // occasionally introduce big gaps
+            n += 10;
+        }
         nums.push_back(n);
     }
     assert(nums.size() == sz);
     //vector<int> nums {0 , 1 , 2 , 2 , 3 , 3 , 4 , 4, 4 , 4};
-    inspect<vector<int>>(nums);
 
-    int tar = rand() % (sz + sz / 3) - sz / 5;
+    int tar = rand() % (sz + sz / 10) - sz / 10;
     //int tar = 4;
     cout << "tar: " << tar << '\n';
     auto res1 = binarySearch(nums, tar);
