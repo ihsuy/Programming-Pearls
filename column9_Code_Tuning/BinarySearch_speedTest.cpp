@@ -137,43 +137,71 @@ int bs4(const vector<int>& nums, const int& target)
     {
         low += 64;
     }
-    if(nums[low + 32] < target)
+    if (nums[low + 32] < target)
     {
-        low+=32;
+        low += 32;
     }
-    if(nums[low+16]<target)
+    if (nums[low + 16] < target)
     {
-        low+=16;
+        low += 16;
     }
-    if(nums[low+8] < target)
+    if (nums[low + 8] < target)
     {
-        low+=8;
+        low += 8;
     }
-    if(nums[low+4] < target)
+    if (nums[low + 4] < target)
     {
         low += 4;
     }
-    if(nums[low+2] < target)
+    if (nums[low + 2] < target)
     {
         low += 2;
     }
-    if(nums[low+1] < target)
+    if (nums[low + 1] < target)
     {
         low += 1;
     }
-    int pos = low+1;
-    if(pos > 1000 or nums[pos] != target)
+    int pos = low + 1;
+    if (pos > 1000 or nums[pos] != target)
     {
         return -1;
     }
     return pos;
 }
 
-// int bs5(const vector<int>& nums, const int& target)
+// my first inplementation of binarysearch for first occurence back in column 4
+// added here for speed comparisions
+int bs5(const vector<int>& nums, const int& val)
+{
+    int low = 0, high = nums.size() - 1;
+
+    while (low <= high)
+    {
+        long long mid = (low + high) / 2;
+        if (nums[mid] == val and
+                ((mid == 0) or (nums[mid - 1] != val)))
+        {
+            return mid;
+        }
+
+        if (nums[mid] >= val)
+        {
+            high = mid - 1;
+        }
+        else
+        {
+            low = mid + 1;
+        }
+    }
+    return -1;
+}
+
+// empty template for new binary search implementations
+// int bs6(const vector<int>& nums, const int& target)
 // {
 //     return 0;
 // }
-// int bs6(const vector<int>& nums, const int& target)
+// int bs7(const vector<int>& nums, const int& target)
 // {
 //     return 0;
 // }
@@ -197,12 +225,14 @@ bf1 avg time spent: 82 nanoseconds
 bf2 avg time spent: 61 nanoseconds
 bf3 avg time spent: 70 nanoseconds
 bf4 avg time spent: 55 nanoseconds
+bf5 avg time spent: 130 nanoseconds
 
 average result on searching in 10,000,000 numbers for 500000 times :
 (didn't test on bf4 since it only works for vector of size 1000)
 bf1 avg: 228 nanoseconds
 bf2 avg: 175 nanoseconds
 bf3 avg: 190 nanoseconds
+bf5 avg: 310 nanoseconds
 */
 
 int main()
@@ -229,7 +259,7 @@ int main()
     // test
     const int nTest = 500000;
 
-    long long t1_sum = 0, t2_sum = 0, t3_sum = 0/*, t4_sum = 0*/;
+    long long t1_sum = 0, t2_sum = 0, t3_sum = 0/*, t4_sum = 0*/, t5_sum = 0;
 
     for (int i = 0; i < nTest; ++i)
     {
@@ -238,19 +268,25 @@ int main()
         auto res2 = profiler<const vector<int>&>(bs2, nums, tar);
         auto res3 = profiler<const vector<int>&>(bs3, nums, tar);
         //auto res4 = profiler<const vector<int>&>(bs4, nums, tar);
+        auto res5 = profiler<const vector<int>&>(bs5, nums, tar);
+
         t1_sum += res1.first;
         t2_sum += res2.first;
         t3_sum += res3.first;
         //t4_sum += res4.first;
+        t5_sum += res5.first;
+
         assert(res1.second < 0 or nums[res1.second] == tar);
         assert(res2.second < 0 or (nums[res2.second] == tar and nums[res2.second - 1] != tar));
         assert(res3.second < 0 or (nums[res3.second] == tar and nums[res3.second - 1] != tar));
         //assert(res4.second < 0 or (nums[res4.second] == tar and nums[res4.second - 1] != tar));
+        assert(res5.second < 0 or (nums[res5.second] == tar and nums[res5.second - 1] != tar));
     }
 
     cout << "t1 avg: " << t1_sum / nTest << '\n';
     cout << "t2 avg: " << t2_sum / nTest << '\n';
     cout << "t3 avg: " << t3_sum / nTest << '\n';
     //cout << "t4 avg: " << t4_sum / nTest << '\n';
+    cout << "t5 avg: " << t5_sum / nTest << '\n';
     return 0;
 }

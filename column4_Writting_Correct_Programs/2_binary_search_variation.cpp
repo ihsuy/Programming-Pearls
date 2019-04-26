@@ -42,6 +42,9 @@ it is possible to do the job in log2 n such comparisons.
 
 // this solution is probably not the solution suggested in chapter 9
 // since i haven't got there at this point
+// *UPDATE: chapter 9 is completed, check them out
+// if you're looking for something faster. :)
+// (also for speed test and comparisons)
 
 // my idea is to normally search for the element x
 // but when x is found, we do an extra check:
