@@ -53,13 +53,16 @@ int bs1(const vector<int>& nums, const int& target)
     return -1;
 }
 
+// *NOTE THERE'S a hidden bug in this code below
+// when searching for the last item in the array
+
 // My version of finding the FIRST OCCURENCE of target in nums
 // use the fact that the search range is halved in every step
 // and since we know low and range size, we directly calculate mid
 // without having to hold "high". also do not terminate when nums[mid] is target
 // but include that item in the range and continue
 int bs2(const vector<int>& nums, const int& target)
-{
+{   
     int low = 0;
     for (int i = (nums.size() - 1) >> 1; i > 0; i >>= 1)
     {
