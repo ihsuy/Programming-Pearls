@@ -55,7 +55,7 @@ int bs1(const vector<int>& nums, const int& target)
 
 // My version of finding the FIRST OCCURENCE of target in nums
 // use the fact that the search range is halved in every step
-// and since we know low and range size, we directly calculate mid 
+// and since we know low and range size, we directly calculate mid
 // without having to hold "high". also do not terminate when nums[mid] is target
 // but include that item in the range and continue
 int bs2(const vector<int>& nums, const int& target)
@@ -115,7 +115,66 @@ int bs3(const vector<int>& nums, const int& target)
     return pos;
 }
 
+// assume nums.size == 1000
+// this solution on the book hard-codes every thing
+// this is definitely gonna be a little bit faster haha
 int bs4(const vector<int>& nums, const int& target)
+{
+    int low = -1;
+    if (nums[511] < target)
+    {
+        low = 488;
+    }
+    if (nums[low + 256] < target)
+    {
+        low += 256;
+    }
+    if (nums[low + 128] < target)
+    {
+        low += 128;
+    }
+    if (nums[low + 64] < target)
+    {
+        low += 64;
+    }
+    if(nums[low + 32] < target)
+    {
+        low+=32;
+    }
+    if(nums[low+16]<target)
+    {
+        low+=16;
+    }
+    if(nums[low+8] < target)
+    {
+        low+=8;
+    }
+    if(nums[low+4] < target)
+    {
+        low += 4;
+    }
+    if(nums[low+2] < target)
+    {
+        low += 2;
+    }
+    if(nums[low+1] < target)
+    {
+        low += 1;
+    }
+    int pos = low+1;
+    if(pos > 1000 or nums[pos] != target)
+    {
+        return -1;
+    }
+    return pos;
+    return 0;
+
+}
+int bs5(const vector<int>& nums, const int& target)
+{
+    return 0;
+}
+int bs6(const vector<int>& nums, const int& target)
 {
     return 0;
 }
@@ -133,12 +192,25 @@ pair<long long, int> profiler(int(bs)(container_type, const int&),
     return {t, res};
 }
 
+/*
+average result on searching in 1000 numbers for 500000 times :
+bf1 avg time spent: 82 nanoseconds
+bf2 avg time spent: 61 nanoseconds
+bf3 avg time spent: 70 nanoseconds
+bf4 avg time spent: 55 nanoseconds
+
+average result on searching in 10,000,000 numbers for 500000 times :
+(didn't test on bf4 since it only works for vector of size 1000)
+bf1 avg: 228 nanoseconds
+bf2 avg: 175 nanoseconds
+bf3 avg: 190 nanoseconds
+*/
 
 int main()
-{
+{   // create test vector
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    const int sz = 1000001;
-    const int n_lower = -5000;
+    const int sz = 10000000;
+    const int n_lower = -sz / 10;
     vector<int> nums;
 
     for (int i = 0, n = n_lower; i < sz; ++i)
@@ -153,10 +225,12 @@ int main()
         }
         nums.push_back(n);
     }
+    assert(nums.size() == sz);
 
-    const int nTest = 150000;
+    // test
+    const int nTest = 500000;
 
-    long long t1_sum = 0, t2_sum = 0, t3_sum = 0;
+    long long t1_sum = 0, t2_sum = 0, t3_sum = 0, t4_sum = 0;
 
     for (int i = 0; i < nTest; ++i)
     {
@@ -164,16 +238,20 @@ int main()
         auto res1 = profiler<const vector<int>&>(bs1, nums, tar);
         auto res2 = profiler<const vector<int>&>(bs2, nums, tar);
         auto res3 = profiler<const vector<int>&>(bs3, nums, tar);
+        //auto res4 = profiler<const vector<int>&>(bs4, nums, tar);
         t1_sum += res1.first;
         t2_sum += res2.first;
         t3_sum += res3.first;
+        //t4_sum += res4.first;
         assert(res1.second < 0 or nums[res1.second] == tar);
         assert(res2.second < 0 or (nums[res2.second] == tar and nums[res2.second - 1] != tar));
         assert(res3.second < 0 or (nums[res3.second] == tar and nums[res3.second - 1] != tar));
+        //assert(res4.second < 0 or (nums[res4.second] == tar and nums[res4.second - 1] != tar));
     }
 
     cout << "t1 avg: " << t1_sum / nTest << '\n';
     cout << "t2 avg: " << t2_sum / nTest << '\n';
     cout << "t3 avg: " << t3_sum / nTest << '\n';
+    //cout << "t4 avg: " << t4_sum / nTest << '\n';
     return 0;
 }
