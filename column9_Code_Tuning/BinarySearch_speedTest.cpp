@@ -73,6 +73,10 @@ int bs2(const vector<int>& nums, const int& target)
     {
         return low;
     }
+    else if(nums[low+1] == target)
+    {
+        return low+1;
+    }
 
     return -1;
 }
@@ -281,6 +285,9 @@ int main()
         assert(res3.second < 0 or (nums[res3.second] == tar and nums[res3.second - 1] != tar));
         //assert(res4.second < 0 or (nums[res4.second] == tar and nums[res4.second - 1] != tar));
         assert(res5.second < 0 or (nums[res5.second] == tar and nums[res5.second - 1] != tar));
+        assert(res2.second == res3.second);
+        //assert(res2.second == res4.second);
+        assert(res2.second == res5.second);
     }
 
     cout << "t1 avg: " << t1_sum / nTest << '\n';
