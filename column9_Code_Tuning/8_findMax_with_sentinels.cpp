@@ -91,7 +91,6 @@ int maxElement3(vector<int>& nums)
     return *max_element(nums.begin(), nums.end());
 }
 
-
 pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int>& nums)
 {
     auto t1 = chrono::high_resolution_clock::now();
