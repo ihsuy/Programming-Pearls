@@ -111,6 +111,10 @@ int main()
     avg t2: 67
     avg t3: 64
     avg t4: 62
+    conclusion:
+    decode2 is the fastest and doesn't require any extra space
+    this supports the saying that bit operations and masking
+    is usually faster than other arithmatic operations
     */
     const int nTest = 100;
     long long t1 = 0, t2 = 0, t3 = 0, t4 = 0;
