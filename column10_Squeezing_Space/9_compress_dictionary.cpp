@@ -32,6 +32,7 @@ that interprets the data.
 */
 
 const string dict_addr = "/Users/ihsuy/programming_pearls/engWords.txt";
+const string decoded_addr = "/Users/ihsuy/programming_pearls/decoded_engWords.txt";
 const string output_addr = "/Users/ihsuy/programming_pearls/compressed_engWords.txt";
 
 // my method is to squeeze 1 alphabet into 5 bits
@@ -43,57 +44,23 @@ const string output_addr = "/Users/ihsuy/programming_pearls/compressed_engWords.
 #define BITS_IN_TOKEN 5
 #define ALPHA_BASE 97
 
-// void CompressDict(const string& from_file = dict_addr,
-//                   const string& to_file = output_addr)
-// {
-//     ifstream dict(from_file);
-
-//     // error checking omitted
-
-//     vector<char> tokens;
-
-//     string word;
-//     while(dict >> word)
-//     {
-//         auto word_len = word.length();
-
-//         int c = 0, ;
-//         char token = 0;
-//         for (int i = 0; i < word_len; ++i)
-//         {
-//             char compressed_char = word[i] - ALPHA_BASE;
-
-//             token |= (compressed_char << c);
-//             c += BITS_IN_TOKEN;
-//             if (c > BITS_IN_BYTE)
-//             {
-//                 tokens.push_back(token);
-//                 token = 0;
-//                 c -= BITS_IN_BYTE;
-//                 token |= (compressed_char>>(BITS_IN_TOKEN-c));
-//             }
-
-//         }
-//     }
-// }
-
-bitset<8> sep_token("11111111");
-vector<char> test(const string& text)
+char sep_token = '|';
+void CompressDict(const string& from_file = dict_addr,
+                  const string& to_file = output_addr)
 {
-    stringstream dict(text);
-
+    ifstream dict(from_file);
+    ofstream compressed_dict(to_file);
     // error checking omitted
 
-    vector<char> tokens;
-
     string word;
+    int c = 0;
+    char token = 0;
+
     while (dict >> word)
     {
-        word += char(0b00011111 + ALPHA_BASE);
+        word += sep_token;
         auto word_len = word.length();
-        cout << word << endl;
-        int c = 0;
-        char token = 0;
+
         for (int i = 0; i < word_len; ++i)
         {
             char compressed_char = word[i] - ALPHA_BASE;
@@ -102,48 +69,38 @@ vector<char> test(const string& text)
             c += BITS_IN_TOKEN;
             if (c >= BITS_IN_BYTE)
             {
-                tokens.push_back(token);
+                compressed_dict << token;
                 token = 0;
 
                 c -= BITS_IN_BYTE;
                 token |= (compressed_char >> (BITS_IN_TOKEN - c));
             }
         }
-        tokens.push_back(token);
-        //tokens.push_back(sep_token.to_ulong());
     }
-    tokens.pop_back();
-    // ofstream outfile(output_addr);
-    // for(auto t : tokens)
-    // {
-    //     outfile << t;
-    // }
-    return tokens;
 }
 
 bitset<8> token_mask("00011111");
-string decodetest(const vector<char>& tokens)
+void DecodeDict(const string& from_file = output_addr,
+                const string& to_file = decoded_addr)
 {
-    string res;
+    ifstream compressed_dict(from_file);
+    ofstream decoded_dict(to_file);
+
+    //string res;
     int shift = 0;
-    bitset<8> btoken(tokens[0]);
-    for (int i = 0; i < tokens.size();)
+    char token = compressed_dict.get();
+    bitset<8> btoken(token);
+    while(compressed_dict)
     {
         bitset<8> decoded_char = (btoken & (token_mask << shift)) >> shift;
 
         if (BITS_IN_TOKEN + shift > BITS_IN_BYTE)
         {
-            i++;
-            btoken = bitset<8>(tokens[i]);
-            // if (tokens[i] == (char)sep_token.to_ulong())
-            // {
-            //     shift = 0;
-            //     btoken = bitset<8>(tokens[++i]);
-            //     res += ' ';
-            //     continue;
-            // }
+            token = compressed_dict.get();
+            btoken = bitset<8>(token);
 
             int offset = BITS_IN_BYTE - shift;
+
             shift += BITS_IN_TOKEN - BITS_IN_BYTE;
 
             bitset<8> extra_mask((1 << shift) - 1);
@@ -153,42 +110,38 @@ string decodetest(const vector<char>& tokens)
         {
             shift += BITS_IN_TOKEN;
         }
-        cout << decoded_char << endl;
-        res += decoded_char==bitset<8>("00011111")?' ':(decoded_char.to_ulong() + ALPHA_BASE);
+
+        if (decoded_char.to_ulong() == sep_token - ALPHA_BASE)
+        {
+            decoded_dict << '\n';
+        }
+        else
+        {
+            decoded_dict << (char)(decoded_char.to_ulong() + ALPHA_BASE);
+        }
     }
-    res.pop_back();
-    return res;
+}
+
+void test()
+{
+    ifstream original(dict_addr);
+    ifstream decoded(decoded_addr);
+
+    string token1, token2;
+    while(original >> token1 and decoded >> token2)
+    {
+        if(token1 != token2)
+        {
+            cout << token1 << " != " << token2 << endl;
+        }
+    }
 }
 
 int main()
 {
-    string text = "yushi q";
-    auto res = test(text);
-    for (int i = 0; i < res.size(); ++i)
-    {
-        string bs = bitset<8>(res[i]).to_string();
-        reverse(bs.begin(), bs.end());
-        cout << bs << ' ';
-    }
-    cout << '\n';
 
-    for (int i = 0; i < text.length(); ++i)
-    {
-        if (text[i] != ' ')
-        {
-            string bs = bitset<5>(text[i] - 'a').to_string();
-            reverse(bs.begin(), bs.end());
-            cout << bs << ' ';
-        }
-    }
-    cout << '\n';
-
-    for (int i = 0; i < res.size(); ++i)
-    {
-        cout << (int)res[i] << endl;
-    }
-
-    cout << decodetest(res) << '\n';
-    cout << bitset<8>(26) << endl;
+    // CompressDict();
+    // DecodeDict();
+    test();
     return 0;
 }
