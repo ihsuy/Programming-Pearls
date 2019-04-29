@@ -38,7 +38,7 @@ could spend some time and space to process the dictionary
 before answering any queries?”
 */
 
-const string dict_addr = "/Users/ihsuy/programming_pearls/column2_Aha_Algorithms/engWords.txt";
+const string dict_addr = "/Users/ihsuy/programming_pearls/engWords.txt";
 
 vector<pair<string, vector<string>>> preprocess_dictionary(const string& dict_path)
 {

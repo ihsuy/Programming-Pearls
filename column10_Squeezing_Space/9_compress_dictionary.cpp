@@ -86,25 +86,24 @@ void DecodeDict(const string& from_file = output_addr,
     ifstream compressed_dict(from_file);
     ofstream decoded_dict(to_file);
 
-    //string res;
     int shift = 0;
     char token = compressed_dict.get();
     bitset<8> btoken(token);
+
     while(compressed_dict)
     {
         bitset<8> decoded_char = (btoken & (token_mask << shift)) >> shift;
 
         if (BITS_IN_TOKEN + shift > BITS_IN_BYTE)
         {
-            token = compressed_dict.get();
-            btoken = bitset<8>(token);
+            btoken = bitset<8>(compressed_dict.get());
 
             int offset = BITS_IN_BYTE - shift;
 
             shift += BITS_IN_TOKEN - BITS_IN_BYTE;
 
-            bitset<8> extra_mask((1 << shift) - 1);
-            decoded_char |= ((btoken & extra_mask) << offset);
+            ;
+            decoded_char |= ((btoken & bitset<8>((1 << shift) - 1)) << offset);
         }
         else
         {
