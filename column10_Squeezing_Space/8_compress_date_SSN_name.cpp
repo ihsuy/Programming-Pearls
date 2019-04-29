@@ -115,6 +115,95 @@ string DecodeSSN(const bitset<30>& encoded_ssn)
     return ssn;
 }
 
+// for names, a regular encoding requires
+// 25 bytes for a name (14 for last, 10 for first, and 1 for middle initial)
+// but from the observation that only values from 0-25 are required to represent
+// an alphabetical character
+// consider some letters in some names must be capitalized we add 1 bit in front
+// to indicate capitalization (0 for lower 1 for upper)
+// and thats 25 * 6 = 150 bits which is about 16 bytes
+// and the version that ignores capitalization would require 19 bytes
+// I'll only implement the version that considers capitalizations
+
+// consider inputs must in the format "firstname middleinitial lastname"
+//                                 max length 10 length 1      length 14
+int field_length[3] = {10, 1, 14};
+bitset<150> EncodeName(string name)
+{   // assumes input's in valid format
+    // extract 3 fields
+    stringstream tokenizer(name);
+    string fields[3];
+    tokenizer >> fields[0] >> fields[1] >> fields[2];
+
+    bitset<150> encoded_name;
+    // encode every 6 bits
+    int mask_shift = 0;
+    for (int f = 0; f < 3; ++f)
+    {   // for each field
+        for (int i = 0; i < field_length[f]; ++i, mask_shift += 6)
+        {
+            if (i >= fields[f].length())
+            {
+                continue;
+            }
+
+            int ch_val = 0;
+            bool need_capitalize = false;
+
+            char ch = fields[f][i];
+
+            if (isupper(ch))
+            {
+                need_capitalize = true;
+                ch_val = ch - 'A';
+            }
+            else
+            {
+                ch_val = ch - 'a';
+            }
+
+            bitset<150> encoded_ch(ch_val);
+            if (need_capitalize)
+            {
+                encoded_ch[5] = 1;
+            }
+
+            encoded_name |= (encoded_ch << mask_shift);
+        }
+    }
+
+    return encoded_name;
+}
+
+bitset<150> char_mask = (1 << 6) - 1;
+string DecodeName(bitset<150> encoded_name)
+{
+    string name;
+    name.reserve(27); // max of 25 characters and 2 spaces
+
+    // decode every 6 bits
+    for (int f = 0; f < 3; ++f)
+    {
+        for (int i = 0; i < field_length[f]; ++i, encoded_name >>= 6)
+        {
+            auto ch_bit = (encoded_name & char_mask);
+            bool need_capitalize = ch_bit[5];
+            ch_bit[5] = 0;
+            auto ch = ch_bit.to_ulong();
+            if (ch == 0)
+            {
+                continue;
+            }
+
+            ch += need_capitalize ? 'A' : 'a';
+
+            name += ch;
+        }
+
+        name += ' ';
+    }
+    return name;
+}
 
 int main()
 {
@@ -128,5 +217,11 @@ int main()
     auto encoded_ssn = EncodeSSN(ssn);
     cout << "encoded_ssn: " << encoded_ssn << '\n';
     cout << "decoded_ssn: " << DecodeSSN(encoded_ssn) << '\n';
+
+    const string name = "Dennis M Ritchie";
+    auto encoded_name = EncodeName(name);
+    cout << "encoded_name: " << encoded_name << '\n';
+    cout << "decoded_name: " << DecodeName(encoded_name) << '\n';
+
     return 0;
 }
