@@ -114,6 +114,9 @@ void qsort1(vector<int>& nums)
     qsort1_helper(nums, 0, nums.size() - 1);
 }
 
+// for qsort2, check out my solution to problem 2:
+// "2_speed_up_lumuto_qsort.cpp"
+
 // qsort3 is motivated by the a corner case input
 // namely, when the input vector is made of identical elements.
 // this will result in excessively long sorting time for qsort1
