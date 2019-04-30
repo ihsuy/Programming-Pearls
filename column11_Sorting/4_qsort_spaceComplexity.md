@@ -9,7 +9,7 @@ However, the space complexity of this algorithm can get as bad as O(N) under the
 
 To tackle this issue, randomized quickSort (also refer to qsort4 in [sorting_algorithms.cpp](https://github.com/ihsuy/programming_pearls/blob/master/column11_Sorting/sorting_algorithms.cpp)) can be used. Instead of always selecting the leftmost entry as pivot, we randomly select 1 and proceed. It is proven to be effective to do such as it cancels the effective of any adversarial input by not selecting pivot under any fixed behaviour.
 Another approach based on randomized quickSort is that "after partitioning, the partition with the fewest elements is (recursively)sorted first, requiring at most O(log n) space. Then the other partition is sorted using tail recursion oriteration, which doesn't add to the call stack"([cited from](http://en.wikipedia.org/wiki/Quicksort#Randomized_quicksort_expected_complexity
-)). This can be understood as: because the alrgorithm always partition the input into 2 parts on each recursion calls, there's always a longer half and a shorter half. If we always choose the shorter half to continue sorting, we will only need at most log(n) recursion depth.
+)). This can be understood as: because the alrgorithm always partition the input into 2 parts on each recursion calls, there's always a longer half and a shorter half. If we always choose the shorter half to continue sorting, we will only need at most log(n) recursion depth in the worst case.
 
 ```c++
 const int cut_off = 10;
