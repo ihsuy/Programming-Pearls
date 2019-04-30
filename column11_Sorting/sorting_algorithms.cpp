@@ -28,10 +28,14 @@ using namespace std;
 The implementation of several sorting algorithms decribed in the book.
 */
 
+// simplest implementation that keeps the invariant
+// "every element in the range [0~i) is sorted"
+// and examine and insert next number 
+// in its correct position on its lhs by repeated swapping 
 void InsertionSort1(vector<int>& nums)
 {
     auto len = nums.size();
-    for (int i = 0, j = 0; i < len; ++i)
+    for (int i = 1, j = 1; i < len; ++i)
     {
         for (j = i; j > 0 and nums[j - 1] > nums[j]; --j)
         {
@@ -39,10 +43,13 @@ void InsertionSort1(vector<int>& nums)
         }
     }
 }
+
+// almost identical to InsertionSort1 but expanded swap function
+// to avoid system function overhead
 void InsertionSort2(vector<int>& nums)
 {
     auto len = nums.size();
-    for (int i = 0, j = 0; i < len; ++i)
+    for (int i = 1, j = 1; i < len; ++i)
     {
         for (j = i; j > 0 and nums[j - 1] > nums[j]; --j)
         {
@@ -53,10 +60,16 @@ void InsertionSort2(vector<int>& nums)
     }
 }
 
+// InsertionSort3 cleverly notice that the swap happens
+// consecutively between contiguous elements
+// and there's no need to "swap everything"
+// but just save nums[j] and "shift" every elements that
+// are supposed to be swapped to the right by 1
+// then put saved nums[j] in its correct position
 void InsertionSort3(vector<int>& nums)
 {
     auto len = nums.size();
-    for (int i = 0, j = 0; i < len; ++i)
+    for (int i = 1, j = 1; i < len; ++i)
     {
         auto tmp = nums[i];
         for (j = i; j > 0 and nums[j - 1] > tmp; --j)
@@ -101,7 +114,25 @@ void qsort1(vector<int>& nums)
     qsort1_helper(nums, 0, nums.size() - 1);
 }
 
-
+// qsort3 is motivated by the a corner case input
+// namely, when the input vector is made of identical elements.
+// this will result in excessively long sorting time for qsort1
+// since it must move its left index one by one while checking
+// everything on its left and found that there's nothing to be
+// sorted.
+// qsort3 tackles the problem from two ends of the array
+// uses a main loop and 2 subloops
+// subloop 1 will move left index to the right first and 
+// continue as long as its pointing at elements that are strickly
+// smaller than pivot, and the subloop 2 does the opposite job
+// from right to left. The 2 subloops will stop at the elements
+// that are supposed to be swapped.
+// the main loop breaks when the left and right
+// index examined every number in the array. 
+// we move pivot to its correct position and excluded it from the range
+// the partition procedure needs to 
+// be carried on in further recursion until
+// every element is in its right position
 void qsort3_helper(vector<int>& nums, int low, int high)
 {
     if (low >= high)
@@ -148,12 +179,24 @@ void qsort3(vector<int>& nums)
     qsort3_helper(nums, 0, nums.size() - 1);
 }
 
-
-const int cutoff = 10;
+// qsort4 made 3 optimizations based on qsort3
+// 1. Randomize pivot choice by swapping the leftmost
+// entry with another randomly selected entry. This approach 
+// allows qsort4 to overcome "worst cases runtime" when sorting a
+// already sorted array.
+// 2. Introduce the idea "cut off" which allows us to
+// sort the array while leaving small intervals unsorted
+// and use the sorting algorithms that are efficient at
+// sorting "nearly sorted" array to complete the job
+// 3. Expand the swap function in main loop to reduce function calls
+// and avoid unnecessary overhead by complex APIs offered by
+// system swap function. Expanding system swaps outside the loop
+// wasn't a must since they are called fewer times.
+const int cut_off = 10;
 void qsort4_helper(vector<int>& nums, int low, int high)
 {
     int hl_diff = high - low;
-    if (hl_diff <= cutoff)
+    if (hl_diff <= cut_off)
     {
         return;
     }
@@ -180,7 +223,7 @@ void qsort4_helper(vector<int>& nums, int low, int high)
         {
             break;
         }
-
+        // hand made swap
         auto tmp = nums[l];
         nums[l] = nums[h];
         nums[h] = tmp;
