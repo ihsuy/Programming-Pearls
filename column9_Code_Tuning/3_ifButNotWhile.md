@@ -1,6 +1,8 @@
 What special properties of the “juggling” rotation algorithm allowed us to replace the % remainder operator with an if statement, and not a more costly while statement?  
 Experiment to determine when it is worth replacing a % remainder operator with a while statement.  
+
 ---
+
 The special property of the *juggling rotation* is that its step size will always be less than the arr's size which guarantees the code below will only run once:  
 ```c++
 if(n>arr.size())
