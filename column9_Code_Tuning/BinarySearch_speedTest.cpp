@@ -62,7 +62,7 @@ int bs1(const vector<int>& nums, const int& target)
 // without having to hold "high". also do not terminate when nums[mid] is target
 // but include that item in the range and continue
 int bs2(const vector<int>& nums, const int& target)
-{   
+{
     int low = 0;
     for (int i = (nums.size() - 1) >> 1; i > 0; i >>= 1)
     {
@@ -76,9 +76,9 @@ int bs2(const vector<int>& nums, const int& target)
     {
         return low;
     }
-    else if(nums[low+1] == target)
+    else if (nums[low + 1] == target)
     {
-        return low+1;
+        return low + 1;
     }
 
     return -1;
