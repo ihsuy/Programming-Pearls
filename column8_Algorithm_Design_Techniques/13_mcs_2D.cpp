@@ -16,6 +16,7 @@
 #include <bitset>
 #include <fstream>
 #include <string>
+
 template<typename T>
 inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
 
