@@ -90,8 +90,7 @@ void qsort2(vector<int>& nums)
 // I implemented this method myself after i got the hit "from backward"
 // and ended up producing an almost identical algorithm as suggested in
 // the solution section of the book.
-// However I found my implementation more straight forward 
-// its maybe just my personal opinion
+// However I found while loop a little bit more straight forward than do while
 void qsort21_helper(vector<int>& nums, int low, int high)
 {
     if (low >= high)
@@ -99,16 +98,16 @@ void qsort21_helper(vector<int>& nums, int low, int high)
         return;
     }
 
-    int i = high, pivot = nums[low];
+    int i = high + 1, pivot = nums[low];
 
-    for (int j = high+1; j != low;)
+    for (int j = high + 1; j != low;)
     {
         while (nums[--j] < pivot);
-        swap(nums[j], nums[i--]);
+        swap(nums[j], nums[--i]);
     }
 
-    qsort21_helper(nums, low, i);
-    qsort21_helper(nums, i + 2, high);
+    qsort21_helper(nums, low, i - 1);
+    qsort21_helper(nums, i + 1, high);
 }
 void qsort21(vector<int>& nums)
 {
@@ -117,23 +116,23 @@ void qsort21(vector<int>& nums)
 
 int main()
 {
-    vector<int> nums {9, 5, 1, 1, 0, 9, 0, 9, 3, 2, 5, 0};
-    qsort2(nums);
-    inspect<vector<int>>(nums);
-    // srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+    // vector<int> nums {9, 5, 1, 1, 0, 9, 0, 9, 3, 2, 5, 0};
+    // qsort2(nums);
+    // inspect<vector<int>>(nums);
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-    // for (int i = 0; i < 1000; ++i)
-    // {
-    //     vector<int> nums;
-    //     for (int j = 0; j < 100; ++j)
-    //     {
-    //         nums.push_back(rand() % 100);
-    //     }
-    //     vector<int> cp = nums;
-    //     sort(cp.begin(), cp.end());
-    //     qsort2(nums);
-    //     assert(cp == nums);
-    // }
+    for (int i = 0; i < 1000; ++i)
+    {
+        vector<int> nums;
+        for (int j = 0; j < 100; ++j)
+        {
+            nums.push_back(rand() % 100);
+        }
+        vector<int> cp = nums;
+        sort(cp.begin(), cp.end());
+        qsort21(nums);
+        assert(cp == nums);
+    }
 
     return 0;
 }

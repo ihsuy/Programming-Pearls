@@ -70,11 +70,6 @@ vector<int> RandomVector(const size_t& n)
 
 int main()
 {
-    // const int& vec_size = 20;
-    // auto nums = RandomVector(vec_size);
-    // inspect<vector<int>>(nums);
-    // ShellSort(nums);
-    // inspect<vector<int>>(nums);
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
     for (int i = 0; i < 1000; ++i)
