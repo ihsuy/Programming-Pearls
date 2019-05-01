@@ -23,7 +23,51 @@ inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); wh
 
 /////////////////////////////////////////////////////////////
 using namespace std;
+void qsort3_helper(vector<int>& nums, int low, int high)
+{
+    if (low >= high)
+    {
+        return;
+    }
 
+    int pivot = nums[low];
+    int l = low, h = high + 1;
+
+    for (;;)
+    {
+        do
+        {
+            l++;
+        }
+        while (l <= h and nums[l] < pivot);
+
+        do
+        {
+            h--;
+        }
+        while (nums[h] > pivot);
+        // in the loop above,
+        // since nums[low] == pivot,
+        // it serves as a sentinel value
+        // to prevent infinite loop
+
+        if (l > h)
+        {
+            break;
+        }
+
+        swap(nums[l], nums[h]);
+    }
+    swap(nums[h], nums[low]);
+
+    qsort3_helper(nums, low, h - 1);
+    qsort3_helper(nums, h + 1, high);
+}
+
+void qsort3(vector<int>& nums)
+{
+    qsort3_helper(nums, 0, nums.size() - 1);
+}
 /*
 Write a “fat pivot” partitioning function with the postcondition
 *--------*--------*--------*
@@ -144,14 +188,16 @@ int main()
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
     int arr_size = 10000;
     vector<int> nums(RandomVector(arr_size));
-    vector<int> cp(nums);
+    vector<int> cp1(nums);
+    vector<int> cp2(nums);
 
+    profiler(qsort3, nums, "Quicksort");
     profiler(QuickSort_FatPivot, nums, "Fat Pivot Quicksort");
+    
 
-
-    sort(cp.begin(), cp.end());
-    assert(nums == cp);
-
+    sort(cp2.begin(), cp2.end());
+    assert(nums == cp2);
+    assert(cp1 == cp2);
 
     return 0;
 }
