@@ -130,19 +130,83 @@ int kth_smallest(vector<int>& nums, const int& k)
         return -1;
     }
 
-    return kth_smallest_helper(0, nums_size - 1, nums, k-1);
+    return kth_smallest_helper(0, nums_size - 1, nums, k - 1);
+}
+
+
+// a more versatile version of the algorithm above
+int kth_smallest2_helper(const int& low, const int& high,
+                         vector<int>& nums, const int& k)
+{
+    if (low >= high)
+    {
+        return -1;
+    }
+
+    swap(nums[low], nums[(rand() % (high - low + 1)) + low]);
+
+    int pivot = nums[low],
+        l = low + 1, h = high + 1;
+
+    for (;;)
+    {
+        while (nums[--h] > pivot);
+        while (nums[l++] < pivot);
+        if (l > h)
+        {
+            break;
+        }
+        swap(nums[l], nums[h]);
+    }
+    swap(nums[low], nums[h]);
+
+    if (h == k)
+    {
+        return nums[h];
+    }
+
+    if (h < k)
+    {
+        return kth_smallest2_helper(h + 1, high, nums, k);
+    }
+    else
+    {
+        return kth_smallest2_helper(low, h - 1, nums, k);
+    }
+}
+
+int kth_smallest2(vector<int>& nums, const int& k)
+{
+    int nums_size = nums.size();
+    if (k < 1 or k > nums_size or nums_size == 0)
+    {
+        return -1;
+    }
+
+    return kth_smallest_helper(0, nums_size - 1, nums, k - 1);
 }
 
 int main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-    vector<int> nums {5, 2, 6, 1, 7, 3, 9};
-    for (int i = 0; i < 10; ++i)
+    int arr_size = 1000;
+    vector<int> nums;
+    nums.reserve(arr_size);
+    for (int i = 0; i < arr_size; ++i)
     {
-        cout << "naive1 : " << kth_smallest_naive1(nums, i) << endl;
-        cout << "naive2 : " << kth_smallest_naive2(nums, i) << endl;
-        cout << "optimal: " << kth_smallest(nums, i) << endl;
+        nums.push_back(i);
+    }
+    shuffle(nums.begin(), nums.end(), default_random_engine(chrono::high_resolution_clock::now().time_since_epoch().count()));
+
+    for (int i = -10; i < arr_size+10; ++i)
+    {
+        //cout << "naive1  : " << kth_smallest_naive1(nums, i) << endl;
+        auto res2 = kth_smallest_naive2(nums, i);
+        auto res3 =  kth_smallest(nums, i);
+        auto res4 =  kth_smallest(nums, i);
+        assert(res2 == res3);
+        assert(res2 == res4);
     }
 
     return 0;
