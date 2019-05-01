@@ -33,32 +33,125 @@ How would you incorporate the function into a Quicksort program?
 */
 
 pair<int, int> FatPivotPartition(vector<int>& nums,
-                                 const int& low, const int& high)
+                                 const int& low,
+                                 const int& high)
 {
+    swap(nums[low], nums[rand() % (high - low + 1) + low]);
+
     int pivot = nums[low];
     int p_left = low, p_right = low;
 
-    for (int i = low + 1; i <= high;++i)
+    for (int i = low + 1; i <= high; ++i)
     {
+        int temp;
         if (nums[i] < pivot)
         {
-            swap(nums[++p_left], nums[i]);
-            swap(nums[++p_right], nums[i]);
+            temp = nums[++p_left];
+            nums[p_left] = nums[i];
+            if (++p_right != p_left)
+            {
+                nums[i] = nums[p_right];
+                nums[p_right] = temp;
+            }
+            else
+            {
+                nums[i] = temp;
+            }
         }
         else if (nums[i] == pivot)
         {
-            swap(nums[++p_right], nums[i]);
+            temp = nums[++p_right];
+            nums[p_right] = nums[i];
+            nums[i] = temp;
         }
     }
     swap(nums[low], nums[p_left]);
     return {p_left, p_right};
 }
 
+// pair<int, int> FatPivotPartition(vector<int>& nums,
+//                                  const int& low,
+//                                  const int& high)
+// {
+//     int pivot = nums[low];
+//     int p_left = low, p_right = low;
+
+//     for (int i = low + 1; i <= high; ++i)
+//     {
+//         if (nums[i] < pivot)
+//         {
+//             swap(nums[++p_left], nums[i]);
+//             if (++p_right != p_left)
+//             {
+//                 swap(nums[p_right], nums[i]);
+//             }
+//         }
+//         else if (nums[i] == pivot)
+//         {
+//             swap(nums[++p_right], nums[i]);
+//         }
+//     }
+//     swap(nums[low], nums[p_left]);
+//     return {p_left, p_right};
+// }
+
+void QuickSort_FatPivot_helper(vector<int>& nums,
+                               const int& low,
+                               const int& high)
+{
+    if (low >= high)
+    {
+        return;
+    }
+    auto fat_pivot = FatPivotPartition(nums, low, high);
+
+    QuickSort_FatPivot_helper(nums, low, fat_pivot.first - 1);
+    QuickSort_FatPivot_helper(nums, fat_pivot.second + 1, high);
+}
+
+void QuickSort_FatPivot(vector<int>& nums)
+{
+    QuickSort_FatPivot_helper(nums, 0, nums.size() - 1);
+}
+
+const size_t rand_upper_bound = 1000;
+vector<int> RandomVector(const size_t& n)
+{
+    vector<int> nums;
+    nums.reserve(n);
+    for (int i = 0; i < n; ++i)
+    {
+        nums.push_back(rand() % rand_upper_bound);
+    }
+    return nums;
+}
+
+const string time_unit = "microseconds";
+void profiler(void(SortAlgorithm)(vector<int>&), vector<int>& nums/*not sorted*/,
+              const string& algorithm_name)
+{
+    auto t1 = chrono::high_resolution_clock::now();
+    SortAlgorithm(nums);
+    auto t2 = chrono::high_resolution_clock::now() - t1;
+    long long t = chrono::duration_cast<chrono::microseconds>(t2).count();
+
+    printf("Algorithm: %s\ntook %lld %s to sort %ld numbers\n",
+           algorithm_name.c_str(), t, time_unit.c_str(), nums.size());
+}
+
 int main()
 {
-    vector<int> nums {3, 2, 1, 0, 3, 3, 9, 4, 3, 0, 7, 8, 3, 1, 3};
-    FatPivotPartition(nums, 0, nums.size()-1);
-    inspect<vector<int>>(nums);
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+    int arr_size = 10000;
+    vector<int> nums(RandomVector(arr_size));
+    vector<int> cp(nums);
+
+    profiler(QuickSort_FatPivot, nums, "Fat Pivot Quicksort");
+
+
+    sort(cp.begin(), cp.end());
+    assert(nums == cp);
+
 
     return 0;
 }

@@ -30,8 +30,8 @@ The implementation of several sorting algorithms decribed in the book.
 
 // simplest implementation that keeps the invariant
 // "every element in the range [0~i) is sorted"
-// and examine and insert next number 
-// in its correct position on its lhs by repeated swapping 
+// and examine and insert next number
+// in its correct position on its lhs by repeated swapping
 void InsertionSort1(vector<int>& nums)
 {
     auto len = nums.size();
@@ -125,15 +125,15 @@ void qsort1(vector<int>& nums)
 // sorted.
 // qsort3 tackles the problem from two ends of the array
 // uses a main loop and 2 subloops
-// subloop 1 will move left index to the right first and 
+// subloop 1 will move left index to the right first and
 // continue as long as its pointing at elements that are strickly
 // smaller than pivot, and the subloop 2 does the opposite job
 // from right to left. The 2 subloops will stop at the elements
 // that are supposed to be swapped.
 // the main loop breaks when the left and right
-// index examined every number in the array. 
+// index examined every number in the array.
 // we move pivot to its correct position and excluded it from the range
-// the partition procedure needs to 
+// the partition procedure needs to
 // be carried on in further recursion until
 // every element is in its right position
 void qsort3_helper(vector<int>& nums, int low, int high)
@@ -184,7 +184,7 @@ void qsort3(vector<int>& nums)
 
 // qsort4 made 3 optimizations based on qsort3
 // 1. Randomize pivot choice by swapping the leftmost
-// entry with another randomly selected entry. This approach 
+// entry with another randomly selected entry. This approach
 // allows qsort4 to overcome "worst cases runtime" when sorting a
 // already sorted array.
 // 2. Introduce the idea "cut off" which allows us to
