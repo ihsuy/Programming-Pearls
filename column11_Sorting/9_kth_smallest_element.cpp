@@ -87,6 +87,21 @@ int kth_smallest_naive2(vector<int>& nums, const int& k)
 // know about can be set to a value thats smaller than it and thus invalidate
 // our answer.
 // To achieve our goal, we review what we've done in quicksort.
+// The essence of quicksort is concentrated in the "partition" process
+// which only costs O(N) time but allows us to put 1 element in its correct 
+// position and every other elements in their correct range.
+
+// How will this help us find the kth smallest element?
+// Let's just apply quicksort for once and see.
+// after first partition, we have and element say n, thats placed at
+// the r-th position. 
+// What can we say about the result array now?
+// we know that every element that is smaller than n is on its left 
+// and vise versa. which means, if the k is less than r then the k-th smallest
+// element must be on n's left and vise versa.
+// Therefore we can just ignore all elements on n's right from now on, and 
+// do another partition on the left of n(exclusive) until we place an element
+// in the k-th position of the array. we know that we've found our result.
 
 int kth_smallest_helper(const int& low, const int& high,
                         vector<int>& nums, const int& k)
