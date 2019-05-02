@@ -33,7 +33,7 @@ implement: set, clr, test
 // 2^5 is 32 and shifting int by 5 to the right is to divide it by 32
 // which will be helpful when converting bit index to index in the int array
 #define SHIFT 5
-// 0x1f is 111111 is 31
+// 0x1f is 111111 == 31
 #define MASK 0x1f
 #define N 1000
 
@@ -59,20 +59,20 @@ struct bitVector
 		// we move the mask to the right int slot where i-th bit belongs
 		// and do binary OR to set bit
 
-		a[(i>>SHIFT)] |= 1<<(i&MASK);
+		a[i>>SHIFT] |= (1<<(i&MASK));
 	}
 
 	void clr(const size_t& i)
 	{
 		// pretty much the same as set
 		// but this time we get the opposite value and do bitwise AND to clear bits
-		a[(i>>SHIFT)] &= ~1<<(i&MASK);
+		a[i>>SHIFT] &= ~(1<<(i&MASK));
 	}
 
 	int test(const size_t& i)
 	{
 		// see if the ith bit is turned on
-		return a[(i>>SHIFT)] & (1<<(i&MASK));
+		return a[i>>SHIFT] & (1<<(i&MASK));
 	}
 
 	~bitVector()

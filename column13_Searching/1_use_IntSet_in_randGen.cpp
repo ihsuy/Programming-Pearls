@@ -223,11 +223,11 @@ public:
         }
 
         if (savetemp->val > num)
-        {   
+        {
             savetemp->left = new node(num, nullptr, nullptr);
         }
         else
-        {   
+        {
             savetemp->right = new node(num, nullptr, nullptr);
         }
         sz++;
@@ -255,6 +255,43 @@ public:
     {
         return sz;
     }
+};
+
+/*
+IntSetImp(int maxelements, int maxval);
+    void insert(int t);
+    int size();
+    void report(int *v);
+*/
+
+class IntSetBitVec
+{
+    enum {BITSPERWORD = 32, SHIFT = 5, MASK = 0x1f};
+    int* bits;
+    int sz;
+
+    void set(const int& i)
+    {
+        bits[i>>SHIFT] |= (1<<(i&MASK));
+    }
+
+    void clr(const int& i)
+    {
+        bits[i>>SHIFT] &= ~(1<<(i&MASK));
+    }
+public:
+    IntSetBitVec(const int& maxelements, const int& maxval):
+    bits(new int[(maxelements>>SHIFT) + 1]), sz(0)
+    {
+        memset(bits, 0, maxelements);
+    }
+
+    int size()
+    {
+        return sz;
+    }
+
+
 };
 
 /*
@@ -296,7 +333,7 @@ void profiler(void(gs)(const int&, const int&, int*&),
 int main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    
+
     const int max_n = 10000000;
     const int min_m = 100000;
     const int max_m = 500000;
