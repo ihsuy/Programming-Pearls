@@ -290,7 +290,10 @@ public:
     IntSetBitVec(const int& maxelements, const int& maxval):
         bits(new int[(maxval >> SHIFT) + 1]), sz(0), capacity(maxval)
     {
-        memset(bits, 0, maxelements);
+        for (int i = 0; i < capacity; ++i)
+        {
+            clr(i);
+        }
     }
 
     int size()
