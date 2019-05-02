@@ -134,6 +134,7 @@ public:
         if (head->next == nullptr)
         {
             head = new node(num, head);
+            sz++;
             return;
         }
 
@@ -268,20 +269,26 @@ class IntSetBitVec
 {
     enum {BITSPERWORD = 32, SHIFT = 5, MASK = 0x1f};
     int* bits;
-    int sz;
+    int sz, capacity;
 
     void set(const int& i)
     {
-        bits[i>>SHIFT] |= (1<<(i&MASK));
+        bits[i >> SHIFT] |= (1 << (i & MASK));
     }
 
     void clr(const int& i)
     {
-        bits[i>>SHIFT] &= ~(1<<(i&MASK));
+        bits[i >> SHIFT] &= ~(1 << (i & MASK));
     }
+
+    bool test(const int& i)
+    {
+        return bits[i >> SHIFT] & (1 << (i & MASK));
+    }
+
 public:
     IntSetBitVec(const int& maxelements, const int& maxval):
-    bits(new int[(maxelements>>SHIFT) + 1]), sz(0)
+        bits(new int[(maxval >> SHIFT) + 1]), sz(0), capacity(maxval)
     {
         memset(bits, 0, maxelements);
     }
@@ -291,7 +298,96 @@ public:
         return sz;
     }
 
+    void insert(const int& num)
+    {
+        if (!test(num))
+        {
+            set(num);
+            sz++;
+        }
+    }
 
+    void report(int* v)
+    {
+        for (int i = 0, j = 0; i < capacity; ++i)
+        {
+            if (test(i))
+            {
+                v[j++] = i;
+            }
+        }
+    }
+};
+
+class IntSetBin
+{
+    struct node
+    {
+        int val;
+        node* next;
+        node(const int& v, node* nx): val(v), next(nx) {}
+    };
+    node** bins;
+    node* sentinel;
+    int sz, nbins, max_value;
+
+public:
+
+    IntSetBin(const int& maxelements, const int& maxval)
+        : sentinel(new node(maxval, nullptr)),
+          sz(0), nbins(maxelements), max_value(maxval)
+    {
+        bins = new node*[nbins];
+        for (int i = 0; i < nbins; ++i)
+        {
+            bins[i] = sentinel;
+        }
+    }
+
+    int size ()
+    {
+        return sz;
+    }
+
+    void insert(const int& num)
+    {
+        int choice = num / (1 + (max_value / nbins));
+
+        if (bins[choice]->next == nullptr)
+        {
+            bins[choice] = new node(num, bins[choice]);
+            sz++;
+            return;
+        }
+
+        auto temp = bins[choice];
+
+        while (temp->next->val < num)
+        {
+            temp = temp->next;
+        }
+
+        if (temp->next->val == num)
+        {
+            return;
+        }
+
+        temp->next = new node(num, temp->next);
+        sz++;
+    }
+
+    void report(int* v)
+    {
+        for (int i = 0, j = 0; i < nbins; ++i)
+        {
+            auto temp = bins[i];
+            while(temp->val < max_value)
+            {
+                v[j++] = temp->val;
+                temp = temp->next;
+            }
+        }
+    }
 };
 
 /*
@@ -330,22 +426,61 @@ void profiler(void(gs)(const int&, const int&, int*&),
     cout << "data structure: " << name << " time spent: " << t << " microseconds\n";
 }
 
+/*
+Results on small m, n
+m: 10000 n: 100000
+data structure: IntSetSTL time spent: 8116 microseconds
+data structure: IntSetArray time spent: 92561 microseconds
+data structure: IntSetList time spent: 87416 microseconds
+data structure: IntSetBST time spent: 1825 microseconds
+data structure: IntSetBitVec time spent: 548 microseconds
+data structure: IntSetBin time spent: 968 microseconds
+m: 20000 n: 100000
+data structure: IntSetSTL time spent: 14807 microseconds
+data structure: IntSetArray time spent: 343468 microseconds
+data structure: IntSetList time spent: 549007 microseconds
+data structure: IntSetBST time spent: 6442 microseconds
+data structure: IntSetBitVec time spent: 1025 microseconds
+data structure: IntSetBin time spent: 2455 microseconds
+m: 30000 n: 100000
+data structure: IntSetSTL time spent: 29777 microseconds
+data structure: IntSetArray time spent: 840238 microseconds
+data structure: IntSetList time spent: 1628023 microseconds
+data structure: IntSetBST time spent: 7310 microseconds
+data structure: IntSetBitVec time spent: 1234 microseconds
+data structure: IntSetBin time spent: 3101 microseconds
+m: 40000 n: 100000
+data structure: IntSetSTL time spent: 39728 microseconds
+data structure: IntSetArray time spent: 1487178 microseconds
+data structure: IntSetList time spent: 3994499 microseconds
+data structure: IntSetBST time spent: 10898 microseconds
+data structure: IntSetBitVec time spent: 1547 microseconds
+data structure: IntSetBin time spent: 4481 microseconds
+m: 50000 n: 100000
+data structure: IntSetSTL time spent: 42727 microseconds
+data structure: IntSetArray time spent: 2400196 microseconds
+data structure: IntSetList time spent: 7655271 microseconds
+data structure: IntSetBST time spent: 15512 microseconds
+data structure: IntSetBitVec time spent: 1905 microseconds
+data structure: IntSetBin time spent: 6673 microseconds
+*/
 int main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-    const int max_n = 10000000;
-    const int min_m = 100000;
-    const int max_m = 500000;
-    for (int m = min_m; m <= max_m; m += 100000)
+    const int max_n = 100000;
+    const int min_m = 10000;
+    const int max_m = 50000;
+    for (int m = min_m; m <= max_m; m += min_m)
     {
         cout << "m: " << m << " n: " << max_n << '\n';
         int v[m];
         profiler(genset<IntSetSTL>, m, max_n, v, "IntSetSTL");
-        // profiler(genset<IntSetArray>, m, max_n, v, "IntSetArray");
-        // profiler(genset<IntSetList>, m, max_n, v, "IntSetList");
+        profiler(genset<IntSetArray>, m, max_n, v, "IntSetArray");
+        profiler(genset<IntSetList>, m, max_n, v, "IntSetList");
         profiler(genset<IntSetBST>, m, max_n, v, "IntSetBST");
+        profiler(genset<IntSetBitVec>, m, max_n, v, "IntSetBitVec");
+        profiler(genset<IntSetBin>, m, max_n, v, "IntSetBin");
     }
-
     return 0;
 }
