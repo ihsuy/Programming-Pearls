@@ -106,29 +106,35 @@ void subsetsGen_helper(const int& m, const int& n,
                        vector<int>& subset, vector<vector<int>>& subsets)
 {
     if(n<m)
-    {
+    {   // no enough numbers left to complete subset of m size
         return;
     }
-    
-    if (m > 0 and n > 0)
-    {
-        vector<int> subset_copy{subset};
-        subsetsGen_helper(m, n - 1, subset_copy, subsets);
 
+    if (m > 0 and n > 0)
+    {   // include n at this time step or do not include
+        subsetsGen_helper(m, n - 1, subset, subsets);
         subset.push_back(n);
         subsetsGen_helper(m - 1, n - 1, subset, subsets);
+        subset.pop_back();
     }
     if (m == 0)
     {
         subsets.push_back(subset);
-        subset.clear();
     }
-
 }
 
+// calculate n choose k
+long long choose(const int& n, const int& k)
+{
+    if(k == 0)
+    {
+        return 1;
+    }
+    return n*choose(n-1, k-1)/k;
+}
 vector<vector<int>> subsetsGen(const int& m, const int& n)
 {
-    vector<vector<int>> subsets;
+    vector<vector<int>> subsets; subsets.reserve(choose(n, m));
     vector<int> subset;
     subsetsGen_helper(m, n, subset, subsets);
     return subsets;

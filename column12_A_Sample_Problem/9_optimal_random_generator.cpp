@@ -43,7 +43,7 @@ vector<int> RandomSet_naive(const int& m, const int& n)
 }
 
 // I understand why this code runs
-// but not quite sure why its output is Random
+
 vector<int> RandomSet_optimal(const int& m, const int& n)
 {
     set<int> s;
