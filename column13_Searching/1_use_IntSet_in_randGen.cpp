@@ -157,7 +157,7 @@ public:
     {
         int i = 0;
         node* temp = head;
-        while(temp!=sentinel)
+        while (temp != sentinel)
         {
             v[i++] = temp->val;
             temp = temp->next;
@@ -166,7 +166,7 @@ public:
 
     void DestroyList(node* ptr)
     {
-        if(ptr->next == nullptr)
+        if (ptr->next == nullptr)
         {
             return;
         }
@@ -179,7 +179,83 @@ public:
     }
 };
 
+class IntSetBST
+{
+    struct node
+    {
+        int val;
+        node* left, *right;
+        node(const int& v, node* l, node* r)
+            : val(v), left(l), right(r) {}
+    };
+    node* root;
+    int sz;
 
+public:
+
+    IntSetBST(const int& maxelements, const int& maxval)
+        : root(nullptr), sz(0) {}
+    void insert(const int& num)
+    {
+        if (root == nullptr)
+        {
+            root = new node(num, nullptr, nullptr);
+            sz++;
+            return;
+        }
+
+        node* temp = root, *savetemp = root;
+        while (temp != nullptr)
+        {
+            savetemp = temp;
+            if (temp->val > num)
+            {
+                temp = temp->left;
+            }
+            else if (temp->val < num)
+            {
+                temp = temp->right;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        if (savetemp->val > num)
+        {   
+            savetemp->left = new node(num, nullptr, nullptr);
+        }
+        else
+        {   
+            savetemp->right = new node(num, nullptr, nullptr);
+        }
+        sz++;
+    }
+
+    void InOrderTraverse(node* root, int* v, int& i)
+    {
+        if (root == nullptr)
+        {
+            return;
+        }
+
+        InOrderTraverse(root->left, v, i);
+        v[i++] = root->val;
+        InOrderTraverse(root->right, v, i);
+    }
+
+    void report(int* v)
+    {
+        int i = 0;
+        InOrderTraverse(root, v, i);
+    }
+
+    int size()
+    {
+        return sz;
+    }
+};
 
 /*
 Task:
@@ -199,34 +275,39 @@ template<typename IntSet>
 void genset(const int& m, const int& n, int*& v)
 {
     IntSet s(m, n);
-    while(s.size() != m)
+    while (s.size() != m)
     {
-        s.insert(rand()%n);
+        s.insert(rand() % n);
     }
-    
+
     s.report(v);
 }
 
 void profiler(void(gs)(const int&, const int&, int*&),
-  const int& m, const int& n, int* v, const string& name)
+              const int& m, const int& n, int* v, const string& name)
 {
     auto t1 = chrono::high_resolution_clock::now();
     gs(m, n, v);
-    auto t2 = chrono::high_resolution_clock::now()-t1;
+    auto t2 = chrono::high_resolution_clock::now() - t1;
     auto t = chrono::duration_cast<chrono::microseconds>(t2).count();
     cout << "data structure: " << name << " time spent: " << t << " microseconds\n";
 }
 
 int main()
 {
-    const int& max_n = 1000000;
-    for(int m = 10000; m <= 40000; m+=10000)
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+    
+    const int max_n = 10000000;
+    const int min_m = 100000;
+    const int max_m = 500000;
+    for (int m = min_m; m <= max_m; m += 100000)
     {
         cout << "m: " << m << " n: " << max_n << '\n';
         int v[m];
         profiler(genset<IntSetSTL>, m, max_n, v, "IntSetSTL");
-        profiler(genset<IntSetArray>, m, max_n, v, "IntSetArray");
-        profiler(genset<IntSetList>, m, max_n, v, "IntSetList");
+        // profiler(genset<IntSetArray>, m, max_n, v, "IntSetArray");
+        // profiler(genset<IntSetList>, m, max_n, v, "IntSetList");
+        profiler(genset<IntSetBST>, m, max_n, v, "IntSetBST");
     }
 
     return 0;
