@@ -419,10 +419,7 @@ int main()
     {
         cout << "m: " << m << " n: " << max_n << '\n';
         int v[m];
-        // profiler(genset_floyd<IntSetSTL>, m, max_n, v, "IntSetSTL");
-        // profiler(genset_floyd<IntSetArray>, m, max_n, v, "IntSetArray");
-        // profiler(genset_floyd<IntSetList>, m, max_n, v, "IntSetList");
-        // profiler(genset_floyd<IntSetBST>, m, max_n, v, "IntSetBST");
+        profiler<IntSetBST>(genset_floyd<IntSetBST>, m, max_n, v, "IntSetBST");
         profiler<IntSetBitVec>(genset<IntSetBitVec>, m, max_n, v, "IntSetBitVec");
         profiler<IntSetBin>(genset<IntSetBin>, m, max_n, v, "IntSetBin");
         profiler<IntSetBitVec>(genset_floyd<IntSetBitVec>, m, max_n, v, "IntSetBitVec");
