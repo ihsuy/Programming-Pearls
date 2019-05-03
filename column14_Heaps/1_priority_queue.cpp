@@ -39,16 +39,17 @@ class PriorityQueue
 public:
     PriorityQueue(const int& cap):
         capacity(cap), actual_size(0),
-        heap(new T[cap + 1])
-    {}
+        heap(new T[cap + 1]) {}
 
     void insert(const T& obj)
     {
         heap[++actual_size] = obj;
-        for (int i = actual_size, j = i; i > 1 and heap[i] < heap[j = i / 2]; i = j)
+        int i = actual_size;
+        for (int j = i; i > 1 and obj < heap[j = i / 2]; i = j)
         {
-            swap(heap[i], heap[j]);
+            heap[i] = heap[j];
         }
+        heap[i] = obj;
     }
 
     T extractmin()
@@ -60,22 +61,22 @@ public:
 
         auto min_val = heap[1];
 
-        heap[1] = heap[actual_size--];
-
-        for (int i = 1, next = i; (next *= 2) <= actual_size; i = next)
+        auto temp = heap[1] = heap[actual_size--];
+        int i = 1, next = i;
+        for (; (next *= 2) <= actual_size; i = next)
         {
             if (next + 1 <= actual_size and heap[next + 1] < heap[next])
             {
                 next++;
             }
-
-            if (heap[next] >= heap[i])
+            if (heap[next] >= temp)
             {
                 break;
             }
-
-            swap(heap[next], heap[i]);
+            heap[i] = heap[next];
         }
+        heap[i] = temp;
+
         return min_val;
     }
 
@@ -83,23 +84,126 @@ public:
     {
         return actual_size;
     }
-
 };
+
+template<typename T>
+struct PriorityVector
+{
+    int capacity, actual_size;
+    vector<T> vec;
+
+public:
+    PriorityVector(const int& cap):
+        capacity(cap), actual_size(0),
+        vec(cap, 0) {}
+
+    void insert(const T& obj)
+    {
+        int i = 0;
+        for (; i < actual_size and vec[i] < obj; ++i);
+        if (i == actual_size)
+        {
+            vec[i] = obj;
+        }
+        else
+        {
+            int j = actual_size;
+            for (; j > i; --j)
+            {
+                vec[j] = vec[j - 1];
+            }
+            vec[j] = obj;
+        }
+        actual_size++;
+    }
+
+    T extractmin()
+    {
+        auto min_val = vec[0];
+        actual_size--;
+        for (int i = 0; i < actual_size; ++i)
+        {
+            vec[i] = vec[i + 1];
+        }
+        return min_val;
+    }
+    int size()
+    {
+        return actual_size;
+    }
+};
+
+template<typename PriorityContainer>
+void InsertTest(PriorityContainer& pc, const vector<int>& nums)
+{
+    for (const auto& n : nums)
+    {
+        pc.insert(n);
+    }
+}
+
+template<typename PriorityContainer>
+void ExtractminTest(PriorityContainer& pc)
+{
+    while (pc.size() != 0)
+    {
+        pc.extractmin();
+    }
+}
+
+template<typename PriorityContainer>
+pair<long long, long long> profiler(PriorityContainer& pc, const vector<int>& nums)
+{
+    auto t1 = chrono::high_resolution_clock::now();
+    InsertTest<PriorityContainer>(pc, nums);
+    auto t2 = chrono::high_resolution_clock::now() - t1;
+    auto time1 = chrono::duration_cast<chrono::nanoseconds>(t2).count();
+
+    t1 = chrono::high_resolution_clock::now();
+    ExtractminTest<PriorityContainer>(pc);
+    t2 = chrono::high_resolution_clock::now() - t1;
+    auto time2 = chrono::duration_cast<chrono::nanoseconds>(t2).count();
+
+    return {time1, time2};
+}
 
 int main()
 {
-    PriorityQueue<int> pq(30);
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-    for (int i = 30; i > 0; --i)
-    {
-        pq.insert(i);
-    }
+    const int n_lower = 2;
+    const int n_upper = 1000;
 
-    while (pq.size() != 0)
+    for (int n = n_lower; n <= n_upper; n<<=1)
     {
-        cout << pq.extractmin() << ' ';
+        cout << "input size: " << n << '\n';
+        vector<int> nums; nums.reserve(n);
+        for (int i = 0; i < n; ++i)
+        {
+            nums.push_back(rand() % n);
+        }
+        PriorityQueue<int> pq(n);
+        auto res1 = profiler<PriorityQueue<int>>(pq, nums);
+
+        PriorityVector<int> pv(n);
+        auto res2 = profiler<PriorityVector<int>>(pv, nums);
+
+        cout << "pq insertion time: " << res1.first
+             << " extractmin time: " << res1.second << '\n';
+        cout << "pv insertion time: " << res2.first
+             << " extractmin time: " << res2.second << '\n';
     }
-    cout << '\n';
+    
+    // PriorityQueue<int> pq(20);
+
+    // for(int i = 20; i > 0; --i)
+    // {
+    //     pq.insert(i);
+    // }
+    // while(pq.size() != 0)
+    // {
+    //     cout << pq.extractmin() << ' ';
+    // }
 
     return 0;
 }
