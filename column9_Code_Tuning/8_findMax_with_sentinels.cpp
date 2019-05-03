@@ -62,7 +62,7 @@ int maxElement2(vector<int>& nums)
 {
     int n = nums.size();
 
-    nums.push_back(0);
+    //nums.push_back(0);
 
     int max_val;
     for (int i = 0; i < n;)
@@ -75,7 +75,7 @@ int maxElement2(vector<int>& nums)
         }
     }
 
-    nums.pop_back();
+    //nums.pop_back();
 
     return max_val;
 }
@@ -92,7 +92,6 @@ int maxElement3(vector<int>& nums)
 {
     return *max_element(nums.begin(), nums.end());
 }
-
 
 pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int> nums)
 {
@@ -113,11 +112,11 @@ int main()
         nums.push_back(rand() % arr_size);
     }
 
-    int jumble_factor = arr_size;
+    int jumble_factor = arr_size+1;
     int nTest = 1000;
 
     ll t1_sum = 0, t2_sum = 0, t3_sum = 0;
-    for (int i = 0; i < nTest; ++i, ++jumble_factor)
+    for (int i = 0; i < nTest; ++i)
     {
         int pos = rand() % arr_size;
         nums[pos] = jumble_factor;
