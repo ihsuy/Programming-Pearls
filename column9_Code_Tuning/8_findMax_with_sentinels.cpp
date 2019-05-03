@@ -86,12 +86,15 @@ int maxElement2(vector<int>& nums)
 // i assume the generic features (custom comp func)
 // and the fact that this function actually return a iterator
 // slows it down
+
+
 int maxElement3(vector<int>& nums)
 {
     return *max_element(nums.begin(), nums.end());
 }
 
-pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int>& nums)
+
+pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int> nums)
 {
     auto t1 = chrono::high_resolution_clock::now();
     auto res = maxele(nums);
@@ -103,7 +106,7 @@ pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int>& nums)
 int main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
-    int arr_size = 100000;
+    const int arr_size = 100000;
     vector<int> nums;
     for (int i = 0; i < arr_size; ++i)
     {
@@ -111,7 +114,7 @@ int main()
     }
 
     int jumble_factor = arr_size;
-    int nTest = 100;
+    int nTest = 1000;
 
     ll t1_sum = 0, t2_sum = 0, t3_sum = 0;
     for (int i = 0; i < nTest; ++i, ++jumble_factor)
@@ -119,23 +122,22 @@ int main()
         int pos = rand() % arr_size;
         nums[pos] = jumble_factor;
 
-        auto correct_ans = *max_element(nums.begin(), nums.end());
-
         auto res1 = profiler(maxElement1, nums);
         auto res2 = profiler(maxElement2, nums);
         auto res3 = profiler(maxElement3, nums);
 
-        assert(res1.second == correct_ans);
-        assert(res2.second == correct_ans);
+        assert(res1.second == jumble_factor);
+        assert(res2.second == jumble_factor);
+        assert(res3.second == jumble_factor);
 
         t1_sum += res1.first;
         t2_sum += res2.first;
         t3_sum += res3.first;
     }
 
-    cout << "maxElement1 average time: " << t1_sum / nTest << '\n';
-    cout << "maxElement2 average time: " << t2_sum / nTest << '\n';
-    cout << "maxElement3 average time: " << t3_sum / nTest << '\n';
+    cout << "maxElement NaiveLoop average time: " << t1_sum / nTest << '\n';
+    cout << "maxElement MaxAtEnd average time:  " << t2_sum / nTest << '\n';
+    cout << "maxElement STL average time:       " << t3_sum / nTest << '\n';
 
     return 0;
 }
