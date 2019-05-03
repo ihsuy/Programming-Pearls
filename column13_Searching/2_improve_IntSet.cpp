@@ -131,7 +131,7 @@ public:
     }
     void insert(const int& num)
     {
-        if (head->next == nullptr)
+        if (head->next == nullptr or head->val > num)
         {
             head = new node(num, head);
             sz++;
@@ -356,7 +356,7 @@ public:
     {
         int choice = num / (1 + (max_value / nbins));
 
-        if (bins[choice]->next == nullptr)
+        if (bins[choice]->next == nullptr or bins[choice]->val > num)
         {
             bins[choice] = new node(num, bins[choice]);
             sz++;
@@ -384,7 +384,7 @@ public:
         for (int i = 0, j = 0; i < nbins; ++i)
         {
             auto temp = bins[i];
-            while(temp->val < max_value)
+            while (temp->val < max_value)
             {
                 v[j++] = temp->val;
                 temp = temp->next;
@@ -408,82 +408,61 @@ void gensets(int m, int maxval)
 */
 
 template<typename IntSet>
-void genset(const int& m, const int& n, int*& v)
+void genset(const int& m, const int& n, int* v, IntSet& s)
 {
-    IntSet s(m, n);
     while (s.size() != m)
     {
         s.insert(rand() % n);
     }
-
     s.report(v);
 }
 
-void profiler(void(gs)(const int&, const int&, int*&),
+template<typename IntSet>
+void genset_floyd(const int& m, const int& n, int* v, IntSet& s)
+{
+    for (int i = n - m; i < n; ++i)
+    {
+        auto select = rand() % (i + 1), sz = s.size();
+        s.insert(select);
+        if (s.size() == sz)
+        {
+            s.insert(i);
+        }
+    }
+    s.report(v);
+}
+
+template<typename IntSet>
+void profiler(void(gs)(const int&, const int&, int*, IntSet&),
               const int& m, const int& n, int* v, const string& name)
 {
+    IntSet s(m, n);
     auto t1 = chrono::high_resolution_clock::now();
-    gs(m, n, v);
+    gs(m, n, v, s);
     auto t2 = chrono::high_resolution_clock::now() - t1;
     auto t = chrono::duration_cast<chrono::microseconds>(t2).count();
     cout << "data structure: " << name << " time spent: " << t << " microseconds\n";
 }
 
-/*
-Results on small m, n
-m: 10000 n: 100000
-data structure: IntSetSTL time spent: 8116 microseconds
-data structure: IntSetArray time spent: 92561 microseconds
-data structure: IntSetList time spent: 87416 microseconds
-data structure: IntSetBST time spent: 1825 microseconds
-data structure: IntSetBitVec time spent: 548 microseconds
-data structure: IntSetBin time spent: 968 microseconds
-m: 20000 n: 100000
-data structure: IntSetSTL time spent: 14807 microseconds
-data structure: IntSetArray time spent: 343468 microseconds
-data structure: IntSetList time spent: 549007 microseconds
-data structure: IntSetBST time spent: 6442 microseconds
-data structure: IntSetBitVec time spent: 1025 microseconds
-data structure: IntSetBin time spent: 2455 microseconds
-m: 30000 n: 100000
-data structure: IntSetSTL time spent: 29777 microseconds
-data structure: IntSetArray time spent: 840238 microseconds
-data structure: IntSetList time spent: 1628023 microseconds
-data structure: IntSetBST time spent: 7310 microseconds
-data structure: IntSetBitVec time spent: 1234 microseconds
-data structure: IntSetBin time spent: 3101 microseconds
-m: 40000 n: 100000
-data structure: IntSetSTL time spent: 39728 microseconds
-data structure: IntSetArray time spent: 1487178 microseconds
-data structure: IntSetList time spent: 3994499 microseconds
-data structure: IntSetBST time spent: 10898 microseconds
-data structure: IntSetBitVec time spent: 1547 microseconds
-data structure: IntSetBin time spent: 4481 microseconds
-m: 50000 n: 100000
-data structure: IntSetSTL time spent: 42727 microseconds
-data structure: IntSetArray time spent: 2400196 microseconds
-data structure: IntSetList time spent: 7655271 microseconds
-data structure: IntSetBST time spent: 15512 microseconds
-data structure: IntSetBitVec time spent: 1905 microseconds
-data structure: IntSetBin time spent: 6673 microseconds
-*/
 int main()
 {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-    const int max_n = 100000;
+    const int max_n = 1000000;
     const int min_m = 10000;
     const int max_m = 50000;
     for (int m = min_m; m <= max_m; m += min_m)
     {
         cout << "m: " << m << " n: " << max_n << '\n';
         int v[m];
-        profiler(genset<IntSetSTL>, m, max_n, v, "IntSetSTL");
-        profiler(genset<IntSetArray>, m, max_n, v, "IntSetArray");
-        profiler(genset<IntSetList>, m, max_n, v, "IntSetList");
-        profiler(genset<IntSetBST>, m, max_n, v, "IntSetBST");
-        profiler(genset<IntSetBitVec>, m, max_n, v, "IntSetBitVec");
-        profiler(genset<IntSetBin>, m, max_n, v, "IntSetBin");
+        // profiler(genset_floyd<IntSetSTL>, m, max_n, v, "IntSetSTL");
+        // profiler(genset_floyd<IntSetArray>, m, max_n, v, "IntSetArray");
+        // profiler(genset_floyd<IntSetList>, m, max_n, v, "IntSetList");
+        // profiler(genset_floyd<IntSetBST>, m, max_n, v, "IntSetBST");
+        profiler<IntSetBitVec>(genset<IntSetBitVec>, m, max_n, v, "IntSetBitVec");
+        profiler<IntSetBin>(genset<IntSetBin>, m, max_n, v, "IntSetBin");
+        profiler<IntSetBitVec>(genset_floyd<IntSetBitVec>, m, max_n, v, "IntSetBitVec");
+        profiler<IntSetBin>(genset_floyd<IntSetBin>, m, max_n, v, "IntSetBin");
     }
     return 0;
 }
