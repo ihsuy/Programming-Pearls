@@ -174,7 +174,7 @@ int main()
     const int n_lower = 2;
     const int n_upper = 1000;
 
-    for (int n = n_lower; n <= n_upper; n<<=1)
+    for (int n = n_lower; n <= n_upper; n <<= 1)
     {
         cout << "input size: " << n << '\n';
         vector<int> nums; nums.reserve(n);
@@ -193,7 +193,7 @@ int main()
         cout << "pv insertion time: " << res2.first
              << " extractmin time: " << res2.second << '\n';
     }
-    
+
     // PriorityQueue<int> pq(20);
 
     // for(int i = 20; i > 0; --i)
