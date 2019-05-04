@@ -34,7 +34,7 @@ For instance, the longest repeated string in
 is “ can do for you”, with “ your country” a close second place.
 */
 
-// brute force method 
+// brute force method
 // by comparing each possible substrings
 pair<int, int> FindLDS1(const string& text)
 {
@@ -71,9 +71,8 @@ pair<int, int> FindLDS2(const char* text, const int& size)
         index_arr[i] = &text[i];
     }
 
-    sort(index_arr, index_arr + size, [](char const * lhs, char const * rhs) {
-        return strcmp(lhs, rhs) < 0;
-    });
+    sort(index_arr, index_arr + size,
+    [](char const * lhs, char const * rhs) { return strcmp(lhs, rhs) < 0;});
 
     int lhs = 0, rhs = 0, maxlen = 0;
     for (int i = 1; i < size; ++i)
