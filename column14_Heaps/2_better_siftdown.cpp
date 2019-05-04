@@ -35,6 +35,66 @@ construct an n-element heap in O(n) time and thereby a faster
 Heapsort that also uses less code.
 */
 
+/*
+some result sorting various sized arrays
+size: 1024
+heapsort1: 173784
+heapsort2: 151924
+stl sort:  53120
+size: 2048
+heapsort1: 376696
+heapsort2: 308627
+stl sort:  105917
+size: 4096
+heapsort1: 826691
+heapsort2: 675500
+stl sort:  229929
+size: 8192
+heapsort1: 1528878
+heapsort2: 1214641
+stl sort:  419179
+size: 16384
+heapsort1: 2973528
+heapsort2: 2405803
+stl sort:  850151
+size: 32768
+heapsort1: 6806153
+heapsort2: 5383589
+stl sort:  1809390
+size: 65536
+heapsort1: 13789503
+heapsort2: 12664651
+stl sort:  3906044
+size: 131072
+heapsort1: 28820432
+heapsort2: 27315402
+stl sort:  7953098
+size: 262144
+heapsort1: 68360424
+heapsort2: 44243740
+stl sort:  13445876
+size: 524288
+heapsort1: 94735621
+heapsort2: 82891908
+stl sort:  28065201
+size: 1048576
+heapsort1: 195004373
+heapsort2: 176318780
+stl sort:  59116338
+size: 2097152
+heapsort1: 412456241
+heapsort2: 389815916
+stl sort:  123581196
+size: 4194304
+heapsort1: 1047137355
+heapsort2: 934604437
+stl sort:  250125901
+size: 8388608
+heapsort1: 2550097562
+heapsort2: 2372173015
+stl sort:  528245435
+*/
+
 void siftdown0_min(int* nums, const int& n)
 {
     int i = 1;
@@ -94,7 +154,7 @@ void HeapSort1(int* nums, const int& size)
     for (int i = size; i > 1; --i)
     {
         swap(nums[1], nums[i]);
-        siftdown0_min(nums, i-1);
+        siftdown0_min(nums, i - 1);
     }
 }
 
@@ -109,22 +169,54 @@ void HeapSort2(int* nums, const int& size)
     {
         auto temp = nums[1];
         nums[1] = nums[i];
-        nums[i]=temp;
-        siftdown_min(nums, 1, i-1);
+        nums[i] = temp;
+        siftdown_min(nums, 1, i - 1);
     }
+}
+
+void STLSort(int* nums, const int& size)
+{
+    sort(nums + 1, nums + size + 1);
+}
+
+long long profiler(void(HeapSort)(int*, const int&), int* nums, const int& size)
+{
+    auto t1 = chrono::high_resolution_clock::now();
+    HeapSort(nums, size);
+    auto t2 = chrono::high_resolution_clock::now() - t1;
+    return chrono::duration_cast<chrono::nanoseconds>(t2).count();
+}
+
+int* arrgen(const int& size)
+{
+    int* arr = new int[size + 1];
+    for (int i = 0; i <= size; ++i)
+    {
+        arr[i] = rand() % size;
+    }
+    return arr;
 }
 
 int main()
 {
-    int nums[11] = {0, 0, 1, 2, 3, 4, 5, 6, 7, 9, 1};
-    //siftdown(nums, 2, 10);
-    // siftup(nums, 10);
-    HeapSort2(nums, 10);
-    for (int i = 1; i < 11; ++i)
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+
+    for (int sz = (1 << 10); sz <= (1 << 25); sz <<= 1)
     {
-        cout << nums[i] << ' ';
+        cout << "size: " << sz << endl;
+        auto nums = arrgen(sz);
+        auto t1 = profiler(HeapSort1, nums, sz);
+        cout << "heapsort1: " << t1 << endl;
+        delete nums;
+        auto nums2 = arrgen(sz);
+        auto t2 = profiler(HeapSort2, nums2, sz);
+        cout << "heapsort2: "<< t2 << endl;
+        delete nums2;
+        auto nums3 = arrgen(sz);
+        auto t3 = profiler(STLSort, nums3, sz);
+        cout << "stl sort:  "<< t3 << endl;
+        delete nums3;
     }
-    cout << '\n';
 
     return 0;
 }
