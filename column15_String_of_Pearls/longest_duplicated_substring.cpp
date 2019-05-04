@@ -34,6 +34,8 @@ For instance, the longest repeated string in
 is “ can do for you”, with “ your country” a close second place.
 */
 
+// brute force method 
+// by comparing each possible substrings
 pair<int, int> FindLDS1(const string& text)
 {
     int text_len = text.length();
@@ -60,12 +62,48 @@ pair<int, int> FindLDS1(const string& text)
     return {lhs, rhs};
 }
 
+// optimal method uses index array
+pair<int, int> FindLDS2(const char* text, const int& size)
+{
+    char const** index_arr = new char const*[size];
+    for (int i = 0; i < size; ++i)
+    {
+        index_arr[i] = &text[i];
+    }
+
+    sort(index_arr, index_arr + size, [](char const * lhs, char const * rhs) {
+        return strcmp(lhs, rhs) < 0;
+    });
+
+    int lhs = 0, rhs = 0, maxlen = 0;
+    for (int i = 1; i < size; ++i)
+    {
+        int j = 0, len = 0;
+        while (j < size and index_arr[i - 1][j] == index_arr[i][j])
+        {
+            j++; len++;
+        }
+        if (len > maxlen)
+        {
+            maxlen = len;
+            lhs = (index_arr[i] - text);
+            rhs = lhs + len;
+        }
+    }
+
+    delete[] index_arr;
+    return {lhs, rhs};
+}
+
 int main()
 {
     const string text = "Ask not what your country can do for you, "
                         "but what you can do for your country";
-    auto lds = FindLDS1(text);
-    cout << text.substr(lds.first, lds.second - lds.first) << endl;
+    auto lds1 = FindLDS1(text);
+    cout << "result 1: " << text.substr(lds1.first, lds1.second - lds1.first) << endl;
+
+    auto lds2 = FindLDS2(text.c_str(), text.length());
+    cout << "result 2: " << text.substr(lds2.first, lds2.second - lds2.first) << endl;
 
     return 0;
 }
