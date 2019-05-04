@@ -37,14 +37,14 @@ void WordWasher(string& word, const string ignore = "[]{}_-',.;:<>?!@*()\\\'\"")
 {
     string new_word;
     int wordlen = word.length();
-    for(int i = 0; i < wordlen; ++i)
+    for (int i = 0; i < wordlen; ++i)
     {
-        if(ignore.find(word[i])==string::npos)
+        if (ignore.find(word[i]) == string::npos)
         {
-            new_word+=tolower(word[i]);
+            new_word += tolower(word[i]);
         }
     }
-    word=new_word;
+    word = new_word;
 }
 
 vector<pair<string, int>> WordRank(const string& file_path, const int& rank_length = 10)
@@ -60,7 +60,7 @@ vector<pair<string, int>> WordRank(const string& file_path, const int& rank_leng
     while (text_file >> word)
     {
         WordWasher(word);
-        if(word=="")
+        if (word == "")
         {
             continue;
         }
@@ -94,12 +94,13 @@ vector<pair<string, int>> WordRank(const string& file_path, const int& rank_leng
 
 int main()
 {
-    const string path = "/Users/ihsuy/programming_pearls/column15_String_of_Pearls/shakespeare.txt";
+    const string path = "/Users/ihsuy/programming_pearls/shakespeare.txt";
     const int rank_length = 1000;
     auto res = WordRank(path, rank_length);
     for (int i = 0; i < rank_length; ++i)
     {
-        cout << "rank " << i + 1 << ": " << setw(8) << left << res[i].first << " ct: " << res[i].second << '\n';
+        cout << "rank " << i + 1 << ": " << setw(12) << left << res[i].first
+             << setw(12) << left << " ct: " << res[i].second << '\n';
     }
 
     return 0;
