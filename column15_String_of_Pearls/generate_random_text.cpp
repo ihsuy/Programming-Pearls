@@ -25,7 +25,7 @@ inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); wh
 using namespace std;
 
 /*
-
+Different random text generating schemes
 */
 const string special_characters = ",. !?";
 char ToChar(const int& n, const string special_char = special_characters)
@@ -52,6 +52,8 @@ string PureRandomText(const int& len)
     }
     return randText;
 }
+
+
 
 int main()
 {
