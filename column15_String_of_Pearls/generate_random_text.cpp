@@ -164,7 +164,6 @@ string Order2RandomText(const int& nWords, const string& source_path)
         int key = rand() % (initial_dist.back()), j = 0;
         while (key >= initial_dist[j++]);
         word += ALPHA_BASE + j;
-        cout << word << endl;
 
         // gets second letter
         vector<int> sec_dist = sec_letter_dist[j];
@@ -173,7 +172,7 @@ string Order2RandomText(const int& nWords, const string& source_path)
         while (key >= sec_dist[j++]);
         if (j >= N_CHAR - 1)
         {
-            text += ' ';
+            text += word+' ';
             continue;
         }
         else
