@@ -191,34 +191,32 @@ vector<pair<string, long long>> LongestMatch(const string& file_path, const vect
 }
 
 void LongestMatch_app(const string& file_path, const int extra_range = 200)
-{
+{   // load text file as a string of characters
     char * buffer;
     auto fsize = LoadFile(file_path, buffer);
-
+    // generate an array of pointers
     char const** index_arr = PreprocessBuffer(buffer, fsize);
-
+    // Start Searching once the preprocessing is done
     cout << "Ready\n";
-
     for (;;)
     {
         cout << "Query>>";
         string q;
         getline(cin, q);
 
-        if(q == "quit()")
+        if (q == "quit()")
         {
             break;
         }
-
+        // binary search on initial
         auto pos = SearchInitial(index_arr, fsize, q[0]);
         if (pos < 0)
         {
             cout << "-->{NOT FOUND}<--\n";
             continue;
         }
-
+        // linear search matches the string
         pair<long, long> pattern_pos = MatchPattern(index_arr, pos, fsize, q);
-
         auto response = GetString(pattern_pos, buffer, index_arr, fsize, extra_range);
 
         // report result
@@ -269,8 +267,5 @@ int main()
     //     cout << responses[i].first << '\n';
     //     cout << ">>>Query End<<<" << "\n\n";
     // }
-
-
-
     return 0;
 }
