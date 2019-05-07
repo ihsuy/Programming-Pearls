@@ -157,8 +157,6 @@ string Order2RandomText(const int& nWords, const string& source_path)
         }
     }
 
-
-
     string text;
     for (int i = 0; i < nWords; ++i)
     {   // generate initial letter
