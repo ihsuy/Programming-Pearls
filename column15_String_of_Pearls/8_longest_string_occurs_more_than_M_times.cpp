@@ -45,6 +45,9 @@ bool a_strcmp(const char* lhs, const char* rhs)
 }
 
 // Find the longest duplicated string that ocurs more than M times
+// This algorithm utilizes the fact that if a sub string repeated M times
+// they must consecutively appear at the beginning of M entries in a sorted
+// index array
 pair<int, int> LongestDuplicates(const char*& s, const int& slen, const int& M)
 {
     auto idxarr = MakeIndexArray(s, slen);
@@ -69,7 +72,10 @@ pair<int, int> LongestDuplicates(const char*& s, const int& slen, const int& M)
 
 string ChToStr(const char* s, const int& begin_index, const int& end_index)
 {
-    assert(begin_index >= 0 and end_index >= 0 and (begin_index <= end_index));
+    assert(begin_index >= 0
+           and end_index >= 0
+           and (begin_index <= end_index));
+
     return string(s + begin_index, s + end_index);
 }
 
