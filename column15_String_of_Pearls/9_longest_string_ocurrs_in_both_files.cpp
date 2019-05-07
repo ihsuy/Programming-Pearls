@@ -28,6 +28,9 @@ using namespace std;
 Given two input texts, find the longest string that occurs in both.
 */
 
+// My method first appen 2nd strings to the end of the 1st string
+// then build index array as if the merged string is 1 single string
+// however ignore the 0 char in middle, and everything else is straightforward
 char const * MergeStrings(const char* text1, const int& len1,
                           const char* text2, const int& len2)
 {
