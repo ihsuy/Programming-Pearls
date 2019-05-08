@@ -53,6 +53,8 @@ string PureRandomText(const int& len)
     return randText;
 }
 
+
+// the order2 random text program need to be improved...
 #define ALPHA_BASE 'a'
 #define N_CHAR 27
 vector<unordered_map<string, vector<int>>> LearnPatternMap(const string& source_path,
