@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -31,27 +38,23 @@ and use program verification techniques to prove
 that its run time is indeed logarithmic.
 */
 
-int BinarySearch(const vector<int>& nums, const int& val, int& comparison_counter)
-{
+int BinarySearch(const vector<int>& nums,
+                 const int& val,
+                 int& comparison_counter) {
     int low = 0, high = nums.size() - 1;
 
-    while (low <= high)
-    {
+    while (low <= high) {
         long long mid = (low + high) / 2;
 
         comparison_counter++;
 
-        if (nums[mid] == val)
-        {
+        if (nums[mid] == val) {
             return mid;
         }
 
-        if (nums[mid] > val)
-        {
+        if (nums[mid] > val) {
             high = mid - 1;
-        }
-        else
-        {
+        } else {
             low = mid + 1;
         }
     }
@@ -66,13 +69,10 @@ vector<int> test_array;
 int prev_end = 0;
 int prev_num = 0;
 
-void GenerateSortedArray(const int& array_size)
-{
+void GenerateSortedArray(const int& array_size) {
     int i = prev_end, num = prev_num;
-    for (; i < array_size; ++i)
-    {
-        if (rand() & 1)
-        {
+    for (; i < array_size; ++i) {
+        if (rand() & 1) {
             num++;
         }
 
@@ -82,8 +82,7 @@ void GenerateSortedArray(const int& array_size)
     prev_num = num;
 }
 
-int main()
-{
+int main() {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
     const int& nTest = 30;
@@ -95,8 +94,7 @@ int main()
     int size = init_size;
     test_array.reserve(1 << nTest);
 
-    for (int i = 0; i < nTest; ++i)
-    {
+    for (int i = 0; i < nTest; ++i) {
         cout << "<<<<<<<< TEST #" << i + 1 << " <<<<<<<<\n";
         cout << "creating sorted array with " << size << " elements\n";
 
@@ -107,8 +105,8 @@ int main()
 
         cout << "searching " << target << "...\n";
         auto res = BinarySearch(test_array, rand() % size, comparison_counter);
-        cout << (res == -1 ? "not found" : "found")
-             << " after " << comparison_counter << " comparisons\n";
+        cout << (res == -1 ? "not found" : "found") << " after "
+             << comparison_counter << " comparisons\n";
 
         comparisons.push_back(comparison_counter);
         log_values.push_back(log(size));
@@ -116,15 +114,14 @@ int main()
         cout << "<<<<<<<< END <<<<<<<<\n";
     }
 
-    for (int i = 0; i < comparisons.size(); ++i)
-    {
+    for (int i = 0; i < comparisons.size(); ++i) {
         cout << "comparisons: " << comparisons[i] << " log: " << log_values[i]
              << " comparisons/log: " << ((double)comparisons[i] / log_values[i])
              << '\n';
     }
 
     /*
-    TEST (nTest = 30) RESULT: 
+    TEST (nTest = 30) RESULT:
     comparisons: 1  log: 0.69314 comparisons/log: 1.4427
     comparisons: 2  log: 1.38629 comparisons/log: 1.4427
     comparisons: 3  log: 2.07944 comparisons/log: 1.4427

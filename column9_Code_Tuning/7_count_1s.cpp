@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -38,11 +45,9 @@ how would you efficiently count the total number of one bits?
 // naive method
 // simply shift to right while extracting rightmost bit
 // and increment count if its on
-inline int countOnes1(int i)
-{
+inline int countOnes1(int i) {
     int count = 0;
-    while (i)
-    {
+    while (i) {
         count += i & 1;
         i >>= 1;
     }
@@ -56,12 +61,10 @@ inline int countOnes1(int i)
 // for number n = 0b00100000000000000000100000000001
 // the while loop in this function only runs 3 times
 // until n becomes 0
-inline int countOnes2(int i)
-{
+inline int countOnes2(int i) {
     int count = 0;
-    while (i)
-    {
-        count ++;
+    while (i) {
+        count++;
         i &= i - 1;
     }
     return count;
@@ -78,8 +81,7 @@ inline int countOnes2(int i)
 // finally we trim the 26 bits on the left
 // since we can have at most 32 bits set
 // and that only requires 6 bits to store
-inline int countOnes3(int i)
-{   // only works for 32 bit
+inline int countOnes3(int i) {  // only works for 32 bit
     i = i - ((i >> 1) & 0x55555555);
     i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
     i = (i + (i >> 4)) & 0x0f0f0f0f;
@@ -92,27 +94,19 @@ inline int countOnes3(int i)
 // add them up
 // key is to prepare a lookup table
 // calculate number of bits in each nibble in advance
-int nibbleBits[16]
-{
-    0, 1, 1, 2,
-    1, 2, 2, 3,
-    1, 2, 2, 3,
-    2, 3, 3, 4
-};
+int nibbleBits[16]{0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4};
 
-inline int countOnes4(int i)
-{
+inline int countOnes4(int i) {
     int count = 0;
-    while(i)
-    {
-        count += nibbleBits[i&0xf]; // get nibble then retrieve number of set bit
-        i>>=4; // next nibble
+    while (i) {
+        count +=
+            nibbleBits[i & 0xf];  // get nibble then retrieve number of set bit
+        i >>= 4;                  // next nibble
     }
     return count;
 }
 
-pair<ll, int> profiler(int(count)(int), int i)
-{
+pair<ll, int> profiler(int(count)(int), int i) {
     auto t1 = chrono::high_resolution_clock::now();
     auto res = count(i);
     auto t2 = chrono::high_resolution_clock::now() - t1;
@@ -124,17 +118,15 @@ pair<ll, int> profiler(int(count)(int), int i)
 result after 10000000 tests
 avg t1: 63 nanoseconds
 avg t2: 58 nanoseconds
-avg t3: 39 nanoseconds // sometimes becomes slower than t4 but usually the fastest
-avg t4: 41 nanoseconds // very stable
+avg t3: 39 nanoseconds // sometimes becomes slower than t4 but usually the
+fastest avg t4: 41 nanoseconds // very stable
 */
 
-int main()
-{
-    //int n = 0b00001111000011110000111100001111;
+int main() {
+    // int n = 0b00001111000011110000111100001111;
     const int nTest = 1000000;
     ll t1_sum = 0, t2_sum = 0, t3_sum = 0, t4_sum = 0;
-    for (int n = 0; n < nTest; ++n)
-    {
+    for (int n = 0; n < nTest; ++n) {
         auto res1 = profiler(countOnes1, n);
         auto res2 = profiler(countOnes2, n);
         auto res3 = profiler(countOnes3, n);

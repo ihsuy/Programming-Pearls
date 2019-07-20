@@ -1,24 +1,31 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -47,36 +54,26 @@ Can you find a faster algorithm?
 // assume ranges are within range of v and no int overflow
 // all elements in v are initialized to 0
 void GroupIncrement(vector<int>& v,
-                    const vector<pair<int, pair<int, int>>>& ranges)
-{
-    for(const auto& range_pair: ranges)
-    {
+                    const vector<pair<int, pair<int, int>>>& ranges) {
+    for (const auto& range_pair : ranges) {
         int val = range_pair.first;
         pair<int, int> range = range_pair.second;
 
         v[range.first] += val;
-        if(range.second+1 < v.size())
-        {
-            v[range.second+1] -= val;
+        if (range.second + 1 < v.size()) {
+            v[range.second + 1] -= val;
         }
     }
 
-    for(int i = 1; i < v.size(); ++i)
-    {
-        v[i] += v[i-1];
+    for (int i = 1; i < v.size(); ++i) {
+        v[i] += v[i - 1];
     }
 }
 
-int main()
-{
-    vector<pair<int, pair<int, int>>> ranges
-    {
-        {1, {0, 3}},
-        {2, {1, 4}},
-        {1, {0, 0}},
-        {3, {3, 7}}
-    };
-    vector<int> v {0,0,0,0,0,0,0,0};
+int main() {
+    vector<pair<int, pair<int, int>>> ranges{
+        {1, {0, 3}}, {2, {1, 4}}, {1, {0, 0}}, {3, {3, 7}}};
+    vector<int> v{0, 0, 0, 0, 0, 0, 0, 0};
 
     GroupIncrement(v, ranges);
     inspect<vector<int>>(v);

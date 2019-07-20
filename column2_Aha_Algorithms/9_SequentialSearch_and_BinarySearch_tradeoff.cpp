@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -32,128 +39,127 @@ table to buy back the preprocessing time required to
 sort the table?
 */
 
-int SequentialSearch(const vector<int>& nums, const int& target)
-{
-	for (int i = 0; i < nums.size(); ++i)
-	{
-		if (nums[i] == target)
-		{
-			return i;
-		}
-	}
-	return -1;
+int SequentialSearch(const vector<int>& nums, const int& target) {
+    for (int i = 0; i < nums.size(); ++i) {
+        if (nums[i] == target) {
+            return i;
+        }
+    }
+    return -1;
 }
 
-int BinarySearch(const vector<int>& sorted_nums, const int& target)
-{
-	int low = 0, high = sorted_nums.size() - 1;
+int BinarySearch(const vector<int>& sorted_nums, const int& target) {
+    int low = 0, high = sorted_nums.size() - 1;
 
-	while (low <= high)
-	{
-		int mid = (low + high) / 2;
+    while (low <= high) {
+        int mid = (low + high) / 2;
 
-		if (sorted_nums[mid] == target)
-		{
-			return mid;
-		}
+        if (sorted_nums[mid] == target) {
+            return mid;
+        }
 
-		if (sorted_nums[mid] > target)
-		{
-			high = mid - 1;
-		}
-		else
-		{
-			low = mid + 1;
-		}
-	}
+        if (sorted_nums[mid] > target) {
+            high = mid - 1;
+        } else {
+            low = mid + 1;
+        }
+    }
 
-	return -1;
+    return -1;
 }
 
-int main()
-{
-	const size_t kNumsSize = 100000;
-	const size_t test_case_number = 50000;
-	size_t checkpoint = test_case_number / 5;
-	
-	// generate kNumsSize unique random numbers
-	vector<int> nums;
-	nums.reserve(kNumsSize);
+int main() {
+    const size_t kNumsSize = 100000;
+    const size_t test_case_number = 50000;
+    size_t checkpoint = test_case_number / 5;
 
-	cout << "generating " << kNumsSize << " unique random integers...\n";
+    // generate kNumsSize unique random numbers
+    vector<int> nums;
+    nums.reserve(kNumsSize);
 
-	for (int i = 0; i < kNumsSize; ++i)
-	{
-		nums.push_back(i);
-	}
+    cout << "generating " << kNumsSize << " unique random integers...\n";
 
-	srand(chrono::high_resolution_clock::now().time_since_epoch().count());
+    for (int i = 0; i < kNumsSize; ++i) {
+        nums.push_back(i);
+    }
 
-	for (int i = 0; i < kNumsSize; ++i)
-	{
-		swap(nums[i], nums[i + rand() % (kNumsSize - i)]);
-	}
-	vector<int> nums_for_seqSearch = nums;
+    srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
-	cout << "completed\n";
+    for (int i = 0; i < kNumsSize; ++i) {
+        swap(nums[i], nums[i + rand() % (kNumsSize - i)]);
+    }
+    vector<int> nums_for_seqSearch = nums;
 
-	cout << "preprocessing for binarySearch...\n";
+    cout << "completed\n";
 
-	auto t1 = chrono::high_resolution_clock::now();
-	sort(nums.begin(), nums.end());
-	auto t2 = chrono::high_resolution_clock::now() - t1;
-	auto sorting_time_in_nanoseconds = chrono::duration_cast<chrono::nanoseconds>(t2).count();
+    cout << "preprocessing for binarySearch...\n";
 
-	cout << "completed\nsorting time spent: " << sorting_time_in_nanoseconds << " nanoseconds\n";
+    auto t1 = chrono::high_resolution_clock::now();
+    sort(nums.begin(), nums.end());
+    auto t2 = chrono::high_resolution_clock::now() - t1;
+    auto sorting_time_in_nanoseconds =
+        chrono::duration_cast<chrono::nanoseconds>(t2).count();
 
-	cout << "comparing performance of BinarySearch and SequentialSearch for " << test_case_number << " times\n";
+    cout << "completed\nsorting time spent: " << sorting_time_in_nanoseconds
+         << " nanoseconds\n";
 
-	long long total_sequential_search_time = 0;
-	long long total_binary_search_time = 0;
+    cout << "comparing performance of BinarySearch and SequentialSearch for "
+         << test_case_number << " times\n";
 
-	long long total_time_difference = 0;
-	long long turning_point = -1; // number of search need to perform to make binary search cheaper
+    long long total_sequential_search_time = 0;
+    long long total_binary_search_time = 0;
 
-	for (int i = 0; i < test_case_number; ++i)
-	{
-		if (i % checkpoint == 0)
-		{
-			cout << "processing... " << ((double)i / test_case_number) * 100 << "%\n";
-		}
-		auto begin = chrono::high_resolution_clock::now();
-		SequentialSearch(nums_for_seqSearch, i);
-		auto time_elapsed = chrono::high_resolution_clock::now() - begin;
+    long long total_time_difference = 0;
+    long long turning_point =
+        -1;  // number of search need to perform to make binary search cheaper
 
-		auto sequential_search_time = chrono::duration_cast<chrono::nanoseconds>(time_elapsed).count();
+    for (int i = 0; i < test_case_number; ++i) {
+        if (i % checkpoint == 0) {
+            cout << "processing... " << ((double)i / test_case_number) * 100
+                 << "%\n";
+        }
+        auto begin = chrono::high_resolution_clock::now();
+        SequentialSearch(nums_for_seqSearch, i);
+        auto time_elapsed = chrono::high_resolution_clock::now() - begin;
 
-		begin = chrono::high_resolution_clock::now();
-		BinarySearch(nums, i);
-		time_elapsed = chrono::high_resolution_clock::now() - begin;
+        auto sequential_search_time =
+            chrono::duration_cast<chrono::nanoseconds>(time_elapsed).count();
 
-		auto binary_search_time = chrono::duration_cast<chrono::nanoseconds>(time_elapsed).count();
+        begin = chrono::high_resolution_clock::now();
+        BinarySearch(nums, i);
+        time_elapsed = chrono::high_resolution_clock::now() - begin;
 
-		total_sequential_search_time += sequential_search_time;
-		total_binary_search_time += binary_search_time;
+        auto binary_search_time =
+            chrono::duration_cast<chrono::nanoseconds>(time_elapsed).count();
 
-		// cout << "sequential_search_time: " << sequential_search_time << " nanoseconds\n";
-		// cout << "binary_search_time    : " << binary_search_time << " nanoseconds\n";
-		long long time_difference = sequential_search_time - binary_search_time;
-		// cout << "difference            : " << time_difference << " nanoseconds\n";
-		total_time_difference += time_difference;
+        total_sequential_search_time += sequential_search_time;
+        total_binary_search_time += binary_search_time;
 
-		if (turning_point == -1 and total_time_difference > sorting_time_in_nanoseconds)
-		{
-			turning_point = i;
-		}
-	}
+        // cout << "sequential_search_time: " << sequential_search_time << "
+        // nanoseconds\n"; cout << "binary_search_time    : " <<
+        // binary_search_time << " nanoseconds\n";
+        long long time_difference = sequential_search_time - binary_search_time;
+        // cout << "difference            : " << time_difference << "
+        // nanoseconds\n";
+        total_time_difference += time_difference;
 
-	cout << "processing... 100%\nComplete\n";
+        if (turning_point == -1 and
+            total_time_difference > sorting_time_in_nanoseconds) {
+            turning_point = i;
+        }
+    }
 
-	cout << "total_sequential_search_time: " << total_sequential_search_time << " nanoseconds\n";
-	cout << "total_binary_search_time    : " << total_binary_search_time << " nanoseconds\n";
-	cout << "total_time_difference       : " << total_time_difference << " nanoseconds\n";
-	cout << "number binary searches need be performed to buy back the preprocessing time:\n";
-	cout <<	turning_point << '\n';
+    cout << "processing... 100%\nComplete\n";
 
-	return 0;
+    cout << "total_sequential_search_time: " << total_sequential_search_time
+         << " nanoseconds\n";
+    cout << "total_binary_search_time    : " << total_binary_search_time
+         << " nanoseconds\n";
+    cout << "total_time_difference       : " << total_time_difference
+         << " nanoseconds\n";
+    cout << "number binary searches need be performed to buy back the "
+            "preprocessing time:\n";
+    cout << turning_point << '\n';
+
+    return 0;
 }

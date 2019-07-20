@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -48,38 +55,29 @@ it is possible to do the job in log2 n such comparisons.
 // seen the previous value, since it wasn't actually the target value
 
 // Assume nums is sorted in ascending order
-int BinarySearchFirstOccurence(const vector<int>& nums, const int& val)
-{
+int BinarySearchFirstOccurence(const vector<int>& nums, const int& val) {
     int low = 0, high = nums.size() - 1;
 
-    while (low <= high)
-    {
+    while (low <= high) {
         long long mid = (low + high) / 2;
-        if (nums[mid] == val and
-                ((mid == 0) or (nums[mid - 1] != val)))
-        {
+        if (nums[mid] == val and ((mid == 0) or (nums[mid - 1] != val))) {
             return mid;
         }
 
-        if (nums[mid] >= val)
-        {
+        if (nums[mid] >= val) {
             high = mid - 1;
-        }
-        else
-        {
+        } else {
             low = mid + 1;
         }
     }
     return -1;
 }
 
-int main()
-{
-    vector<int> nums {1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 5};
-    for (int i = -1; i < 8; ++i)
-    {
-        cout << "n: " << i
-             << " pos: " << BinarySearchFirstOccurence(nums, i) << '\n';
+int main() {
+    vector<int> nums{1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 5};
+    for (int i = -1; i < 8; ++i) {
+        cout << "n: " << i << " pos: " << BinarySearchFirstOccurence(nums, i)
+             << '\n';
     }
 
     return 0;

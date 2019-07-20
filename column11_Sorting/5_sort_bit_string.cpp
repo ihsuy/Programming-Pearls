@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -30,25 +37,20 @@ varying-length bit strings in time proportional to
 the sum of their lengths.
 */
 
-vector<string> BitStringGenerator(const int& n,
-                                  const int& min_len = 10,
-                                  const int& max_len = 25,
-                                  const int& sparsity = 3/*number of bit average that has 1 bit set*/)
-{
+vector<string> BitStringGenerator(
+    const int& n,
+    const int& min_len = 10,
+    const int& max_len = 25,
+    const int& sparsity = 3 /*number of bit average that has 1 bit set*/) {
     vector<string> bit_strings;
-    for (int i = 0; i < n; ++i)
-    {
+    for (int i = 0; i < n; ++i) {
         int len = rand() % max_len + min_len;
         string bs;
         bs.reserve(len);
-        for (int i = 0; i < len; ++i)
-        {
-            if (rand() % sparsity)
-            {
+        for (int i = 0; i < len; ++i) {
+            if (rand() % sparsity) {
                 bs += '1';
-            }
-            else
-            {
+            } else {
                 bs += '0';
             }
         }
@@ -62,15 +64,11 @@ vector<string> BitStringGenerator(const int& n,
 
 // sort elements in an array of varying-length bit strings
 #define SETBIT_CHAR '1'
-void BitStringSort(vector<string>& bit_strings)
-{
-    for (int i = 0; i < bit_strings.size(); ++i)
-    {
+void BitStringSort(vector<string>& bit_strings) {
+    for (int i = 0; i < bit_strings.size(); ++i) {
         int high = bit_strings[i].length();
-        for (int h = high - 1; h >= 0; --h)
-        {
-            if (bit_strings[i][h] == SETBIT_CHAR)
-            {
+        for (int h = high - 1; h >= 0; --h) {
+            if (bit_strings[i][h] == SETBIT_CHAR) {
                 swap(bit_strings[i][--high], bit_strings[i][h]);
             }
         }
@@ -94,26 +92,23 @@ void bsort(l, u, depth)
     bsort(l, m-1, depth+1)
     bsort(m, u, depth+1)
 
-“The function is originally called by bsort(0, n -l, 1). 
-Beware that this program assigns values to parameters 
-and to variables defining for loops. 
-The linear running time depends strongly on 
-the fact that the swap operation moves pointers to 
+“The function is originally called by bsort(0, n -l, 1).
+Beware that this program assigns values to parameters
+and to variables defining for loops.
+The linear running time depends strongly on
+the fact that the swap operation moves pointers to
 the bit strings and not the bit strings themselves.”
 */
 
-int main()
-{
+int main() {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
     auto bit_strings = BitStringGenerator(20);
-    for (auto& s : bit_strings)
-    {
+    for (auto& s : bit_strings) {
         cout << s << '\n';
     }
     BitStringSort(bit_strings);
     cout << "after\n";
-    for (auto& s : bit_strings)
-    {
+    for (auto& s : bit_strings) {
         cout << s << '\n';
     }
     return 0;

@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -49,38 +56,31 @@ behavior, and analyze the run time mathematically.
 
 int call_counter = 0;
 
-#define MAX_MACRO(a, b) (a<b?b:a)
+#define MAX_MACRO(a, b) (a < b ? b : a)
 
-double max_func(const double& d1, const double& d2)
-{
+double max_func(const double& d1, const double& d2) {
     return d1 < d2 ? d2 : d1;
 }
 
-double arrmax1(const vector<double>& nums, const int& n)
-{
+double arrmax1(const vector<double>& nums, const int& n) {
     call_counter++;
-    if (n == 1)
-    {
+    if (n == 1) {
         return nums[0];
     }
     return max_func(nums[n - 1], arrmax1(nums, n - 1));
 }
 
-double arrmax2(const vector<double>& nums, const int& n)
-{
+double arrmax2(const vector<double>& nums, const int& n) {
     call_counter++;
-    if (n == 1)
-    {
+    if (n == 1) {
         return nums[0];
     }
     return MAX_MACRO(nums[n - 1], arrmax2(nums, n - 1));
 }
 
-double arrmax3(const vector<double>& nums, const int& n)
-{
+double arrmax3(const vector<double>& nums, const int& n) {
     call_counter++;
-    if (n == 1)
-    {
+    if (n == 1) {
         return nums[0];
     }
     auto res = arrmax2(nums, n - 1);
@@ -88,8 +88,8 @@ double arrmax3(const vector<double>& nums, const int& n)
 }
 
 pair<ll, double> profiler(double(arrmax)(const vector<double>&, const int&),
-                          const vector<double>& nums, const int& n)
-{
+                          const vector<double>& nums,
+                          const int& n) {
     auto t1 = chrono::high_resolution_clock::now();
     auto res = arrmax(nums, n);
     auto t2 = chrono::high_resolution_clock::now() - t1;
@@ -115,26 +115,27 @@ called 6272 times
 stop using nested function result as macro's parameter
 halve the time it calls itself
 
-arr size of 2 will result in MAX_MACRO behaves like this 
-MAX_MACRO(a, MAX_MACRO(a, b) (a<b?b:a)) (a < MAX_MACRO(a, b) (a<b?b:a)?MAX_MACRO(a, b) (a<b?b:a):a)
-while arrmax1 only calls itself twice to get the answer
-arrmax2 and arrmax3 calls themselves 169 and 127 times respectively
+arr size of 2 will result in MAX_MACRO behaves like this
+MAX_MACRO(a, MAX_MACRO(a, b) (a<b?b:a)) (a < MAX_MACRO(a, b)
+(a<b?b:a)?MAX_MACRO(a, b) (a<b?b:a):a) while arrmax1 only calls itself twice to
+get the answer arrmax2 and arrmax3 calls themselves 169 and 127 times
+respectively
 */
 
-int main()
-{
+int main() {
     const int arr_size = 2;
     vector<double> nums;
-    for (int i = 0; i < arr_size; ++i)
-    {
+    for (int i = 0; i < arr_size; ++i) {
         nums.push_back((double)i * 0.7);
     }
 
-    shuffle(nums.begin(), nums.end(),
-            default_random_engine(chrono::high_resolution_clock::now()
-                                  .time_since_epoch().count()));
+    shuffle(
+        nums.begin(), nums.end(),
+        default_random_engine(
+            chrono::high_resolution_clock::now().time_since_epoch().count()));
 
-    const char* schema = "arrmax%d result: %lf\ntime spend: %lld nanoseconds\ncalled %d times\n";
+    const char* schema =
+        "arrmax%d result: %lf\ntime spend: %lld nanoseconds\ncalled %d times\n";
 
     auto res1 = profiler(arrmax1, nums, nums.size());
     printf(schema, 1, res1.second, res1.first, call_counter);

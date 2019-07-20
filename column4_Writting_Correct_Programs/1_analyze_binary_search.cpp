@@ -1,24 +1,31 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -35,29 +42,25 @@ mathematics, can you formalize the proof in a logical system?
 
 // do binary search for "val" in nums from left to right inclusively
 // Assume nums is sorted in ascending order
-int BinarySearch(const vector<int>& nums, const int& val,
-                 const int& left, const int& right)
-{
+int BinarySearch(const vector<int>& nums,
+                 const int& val,
+                 const int& left,
+                 const int& right) {
     assert(left >= 0 and left <= right);
     assert(right < nums.size());
 
     int low = left, high = right;
 
-    while (low <= high)
-    {
+    while (low <= high) {
         long long mid = (low + high) / 2;
 
-        if (nums[mid] == val)
-        {
+        if (nums[mid] == val) {
             return mid;
         }
 
-        if (nums[mid] > val)
-        {
+        if (nums[mid] > val) {
             high = mid - 1;
-        }
-        else
-        {
+        } else {
             low = mid + 1;
         }
     }
@@ -121,8 +124,7 @@ int BinarySearch(const vector<int>& nums, const int& val,
 // NO, since either case will cause low > high and immediently breaks the while
 // loop and -1 is returned indicating no found which is correct
 
-int main()
-{
+int main() {
     vector<int> nums{1, 2, 3, 4, 5, 6, 7, 8, 8, 9, 9, 10};
     cout << BinarySearch(nums, 5, 0, nums.size() - 1) << '\n';
     return 0;

@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -41,13 +48,10 @@ stl      maxElement3 average time: 1085066
 // naive method
 // find the largest element in input
 // assume input is non-empty
-int maxElement1(vector<int>& nums)
-{
+int maxElement1(vector<int>& nums) {
     int max_val = nums[0];
-    for (int i = 1; i < nums.size(); ++i)
-    {
-        if (nums[i] > max_val)
-        {
+    for (int i = 1; i < nums.size(); ++i) {
+        if (nums[i] > max_val) {
             max_val = nums[i];
         }
     }
@@ -55,27 +59,24 @@ int maxElement1(vector<int>& nums)
 }
 
 // sentinel method
-// use the last value in the array to gaurantee 
+// use the last value in the array to gaurantee
 // the loop ends
 // and reduce number of checking from 2 to 1 in the loop
-int maxElement2(vector<int>& nums)
-{
+int maxElement2(vector<int>& nums) {
     int n = nums.size();
 
-    //nums.push_back(0);
+    // nums.push_back(0);
 
     int max_val;
-    for (int i = 0; i < n;)
-    {
+    for (int i = 0; i < n;) {
         nums[n] = max_val = nums[i];
         i++;
-        while (nums[i] < max_val)
-        {
+        while (nums[i] < max_val) {
             i++;
         }
     }
 
-    //nums.pop_back();
+    // nums.pop_back();
 
     return max_val;
 }
@@ -87,14 +88,11 @@ int maxElement2(vector<int>& nums)
 // and the fact that this function actually return a iterator
 // slows it down
 
-
-int maxElement3(vector<int>& nums)
-{
+int maxElement3(vector<int>& nums) {
     return *max_element(nums.begin(), nums.end());
 }
 
-pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int> nums)
-{
+pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int> nums) {
     auto t1 = chrono::high_resolution_clock::now();
     auto res = maxele(nums);
     auto t2 = chrono::high_resolution_clock::now() - t1;
@@ -102,22 +100,19 @@ pair<long long, int> profiler(int(maxele)(vector<int>&), vector<int> nums)
     return {t, res};
 }
 
-int main()
-{
+int main() {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
     const int arr_size = 100000;
     vector<int> nums;
-    for (int i = 0; i < arr_size; ++i)
-    {
+    for (int i = 0; i < arr_size; ++i) {
         nums.push_back(rand() % arr_size);
     }
 
-    int jumble_factor = arr_size+1;
+    int jumble_factor = arr_size + 1;
     int nTest = 1000;
 
     ll t1_sum = 0, t2_sum = 0, t3_sum = 0;
-    for (int i = 0; i < nTest; ++i)
-    {
+    for (int i = 0; i < nTest; ++i) {
         int pos = rand() % arr_size;
         nums[pos] = jumble_factor;
 
@@ -155,7 +150,8 @@ int main()
 // anyway but that wasn't the case
 
 //
-// pair<long long, int> profiler2(int(f)(const vector<int>&), const vector<int>& nums)
+// pair<long long, int> profiler2(int(f)(const vector<int>&), const vector<int>&
+// nums)
 // {
 //     auto t1 = chrono::high_resolution_clock::now();
 //     auto res = f(nums);

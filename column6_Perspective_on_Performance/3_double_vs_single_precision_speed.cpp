@@ -1,98 +1,92 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t){typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
 
 /*
 Appel found that changing from double-precision arithmetic
-to single-precision arithmetic doubled the speed of his program. 
+to single-precision arithmetic doubled the speed of his program.
 Choose an appropriate test and measure that speedup on your system.
 */
 
-float add_single(const int& n)
-{
+float add_single(const int& n) {
     float f = 3.3;
-    for(int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         f += f;
     }
     return f;
 }
 
-double add_double(const int& n)
-{
+double add_double(const int& n) {
     double f = 3.3;
-    for(int i = 0; i < n; i++)
-    {
+    for (int i = 0; i < n; i++) {
         f += i;
     }
     return f;
 }
 
-float mul_single(const int& n)
-{
+float mul_single(const int& n) {
     float f = 1.0;
-    for(float i = 0; i < n; i+=0.1)
-    {
+    for (float i = 0; i < n; i += 0.1) {
         f *= i;
     }
     return f;
 }
 
-double mul_double(const int& n)
-{
+double mul_double(const int& n) {
     double f = 1.0;
-    for(double i = 0; i < n; i+=0.1)
-    {
+    for (double i = 0; i < n; i += 0.1) {
         f *= i;
     }
     return f;
 }
 
-float div_single(const int& n)
-{
+float div_single(const int& n) {
     float f = 1.0;
-    for(float i = 0; i < n; i+=0.1)
-    {
+    for (float i = 0; i < n; i += 0.1) {
         f /= i;
     }
     return f;
 }
 
-double div_double(const int& n)
-{
+double div_double(const int& n) {
     double f = 1.0;
-    for(double i = 0; i < n; i+=0.1)
-    {
+    for (double i = 0; i < n; i += 0.1) {
         f /= i;
     }
     return f;
 }
 
-template<typename T>
-long run(T(operation)(const int&), const int& nTest)
-{
+template <typename T>
+long run(T(operation)(const int&), const int& nTest) {
     auto t1 = chrono::high_resolution_clock::now();
     operation(nTest);
     auto t2 = chrono::high_resolution_clock::now() - t1;
@@ -117,10 +111,9 @@ double precision data type addition and multiplication
 is double as fast as for single precision data type
 
 however, single precision slight out performed double on
-division 
+division
 */
-int main()
-{
+int main() {
     const int nTest = 2000000;
 
     auto t_add_single = run<float>(add_single, nTest);
@@ -142,5 +135,5 @@ int main()
 
     cout << "div single precision: " << t_div_single << " nanoseconds\n";
     cout << "div double precision: " << t_div_double << " nanoseconds\n";
-	return 0;
+    return 0;
 }

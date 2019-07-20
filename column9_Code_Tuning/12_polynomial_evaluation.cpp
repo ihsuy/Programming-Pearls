@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -39,13 +46,11 @@ for i = [1, n]
 
 // naive approach
 double PolynomialEvaluation1(const vector<double>& coefficients,
-                             const double& x)
-{
+                             const double& x) {
     double result = coefficients[0];
     double current_x = 1;
     auto nCoefficients = coefficients.size();
-    for (int i = 1; i < nCoefficients; ++i)
-    {
+    for (int i = 1; i < nCoefficients; ++i) {
         current_x *= x;
         result += coefficients[i] * current_x;
     }
@@ -54,7 +59,7 @@ double PolynomialEvaluation1(const vector<double>& coefficients,
 }
 
 // known as Hornor's method
-// refactor polynomial before multiplying and 
+// refactor polynomial before multiplying and
 // reduces its number of multiplication by factor of 2
 // i.e. 4*x^4 + 3*x^3 + 2*x^2 + x + 1
 // if evaluated using the first method, will require 8 multiplications
@@ -62,22 +67,20 @@ double PolynomialEvaluation1(const vector<double>& coefficients,
 //      x*(x*(x*(x*(4)+3)+2)+1)+1
 // we only need 4 multiplications, bravo
 double PolynomialEvaluation2(const vector<double>& coefficients,
-                             const double& x)
-{
+                             const double& x) {
     double result = 0.0;
 
     auto nCoefficients = coefficients.size();
-    for (int i = nCoefficients - 1; i >= 0; --i)
-    {
+    for (int i = nCoefficients - 1; i >= 0; --i) {
         result = result * x + coefficients[i];
     }
     return result;
 }
 
-pair<long long, double> profiler
-(double(pe)(const vector<double>&, const double& x),
- vector<double>& coefficients, const double& x)
-{
+pair<long long, double> profiler(double(pe)(const vector<double>&,
+                                            const double& x),
+                                 vector<double>& coefficients,
+                                 const double& x) {
     auto t1 = chrono::high_resolution_clock::now();
     auto res = pe(coefficients, x);
     auto t2 = chrono::high_resolution_clock::now() - t1;
@@ -85,16 +88,14 @@ pair<long long, double> profiler
     return {t, res};
 }
 
-int main()
-{
+int main() {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
     int nCoefficients = 10000;
     vector<double> coefficients;
     coefficients.reserve(nCoefficients);
 
-    for (int i = 0; i < nCoefficients; ++i)
-    {
+    for (int i = 0; i < nCoefficients; ++i) {
         coefficients.push_back((double)(rand() % 10) / 100);
     }
 
@@ -106,9 +107,9 @@ int main()
 
     assert(abs(res1.second - res2.second) < error_epsilon);
 
-    cout << "method 1 result: " << res1.second
-         << " time spent: " << res1.first << '\n';
-    cout << "method 2 result: " << res2.second
-         << " time spent: " << res2.first << '\n';
+    cout << "method 1 result: " << res1.second << " time spent: " << res1.first
+         << '\n';
+    cout << "method 2 result: " << res2.second << " time spent: " << res2.first
+         << '\n';
     return 0;
 }

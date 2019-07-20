@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -46,52 +53,43 @@ of the numbers of black and white beans originally in the can?
 // true: black ; false: white
 // analysis for why this program terminates will be after
 // the code
-bool CoffeeCanProblem_simulation(int nBlack_bean, int nWhite_bean)
-{
+bool CoffeeCanProblem_simulation(int nBlack_bean, int nWhite_bean) {
     int bean_pool_size = nBlack_bean + nWhite_bean;
-    while (bean_pool_size != 1)
-    {
+    while (bean_pool_size != 1) {
         bool isBlack1 = ((rand() % bean_pool_size) < nBlack_bean);
         bool isBlack2 = ((rand() % bean_pool_size) < nBlack_bean);
 
-        if (nWhite_bean < 2 and not isBlack1 and not isBlack2)
-        {   // when there're fewer than 2 white beans left
+        if (nWhite_bean < 2 and not isBlack1 and
+            not isBlack2) {  // when there're fewer than 2 white beans left
             // we can't draw 2 white beans, so one of them has
             // to be black
             isBlack1 = true;
-            if (nWhite_bean == 0)
-            {   // if there was no white beans at all
+            if (nWhite_bean == 0) {  // if there was no white beans at all
                 // then we can only choose black beans
                 // Note: we know that we have at least 2 black beans left
                 // at this point, because the while loop condition
                 isBlack2 = true;
             }
-        }
-        else if (nBlack_bean < 2 and isBlack1 and isBlack2)
-        {   // similar to above
+        } else if (nBlack_bean < 2 and isBlack1 and
+                   isBlack2) {  // similar to above
             isBlack1 = false;
-            if (nBlack_bean == 0)
-            {
+            if (nBlack_bean == 0) {
                 isBlack2 = false;
             }
         }
 
-        if (not isBlack1 ^ isBlack2)
-        {   // same bean
-            if (isBlack1)
-            {
-                cout << "Two black beans, throw 2 black beans and add 1 black bean\n";
+        if (not isBlack1 ^ isBlack2) {  // same bean
+            if (isBlack1) {
+                cout << "Two black beans, throw 2 black beans and add 1 black "
+                        "bean\n";
                 nBlack_bean--;
-            }
-            else
-            {
-                cout << "Two white beans, throw 2 white beans and add 1 black bean\n";
+            } else {
+                cout << "Two white beans, throw 2 white beans and add 1 black "
+                        "bean\n";
                 nWhite_bean -= 2;
                 nBlack_bean++;
             }
-        }
-        else
-        {
+        } else {
             cout << "different beans, throw black bean and return white bean\n";
             nBlack_bean--;
         }
@@ -161,8 +159,7 @@ bool CoffeeCanProblem_simulation(int nBlack_bean, int nWhite_bean)
 // 1. (black, none) 2. (none, white)
 // 1 will happen whenever number of white is even (include 0)
 // 2 will happen whenever number of white is odd
-int main()
-{
+int main() {
     srand(chrono::high_resolution_clock::now().time_since_epoch().count());
 
     CoffeeCanProblem_simulation(56, 7);

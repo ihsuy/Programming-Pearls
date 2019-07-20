@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -50,29 +57,26 @@ can you reduce those requirements?
 // the following implementation returns a size 27 bitset as encoded result
 // meaning only 27 bits is required to represent a date
 // input will be a string of size 8 that theoriotically uses 8 bytes
-int mask_positions[9] = {0, 1, 5, 7, 11, 15, 19, 23/*end of meaningful values*/,
-                         23/*sentinel value*/
-                        };
-bitset<27> EncodeDate(const string& date)
-{
+int mask_positions[9] = {
+    0, 1, 5, 7, 11, 15, 19, 23 /*end of meaningful values*/,
+    23 /*sentinel value*/
+};
+bitset<27> EncodeDate(const string& date) {
     assert(date.length() == 8);
 
     bitset<27> encoded_date;
-    for (int i = 0; i < 8; ++i)
-    {
+    for (int i = 0; i < 8; ++i) {
         encoded_date |= ((date[i] - '0') << mask_positions[i]);
     }
     return encoded_date;
 }
 
 bitset<27> masks[8] = {1, 15, 3, 15, 15, 15, 15, 15};
-string DecodeDate(bitset<27> encoded_date)
-{
+string DecodeDate(bitset<27> encoded_date) {
     string date;
     date.reserve(8);
 
-    for (int i = 0; i < 8; ++i)
-    {
+    for (int i = 0; i < 8; ++i) {
         date += ((encoded_date & masks[i]).to_ulong() + '0');
         encoded_date >>= (mask_positions[i + 1] - mask_positions[i]);
     }
@@ -90,8 +94,7 @@ string DecodeDate(bitset<27> encoded_date)
 // and we are gonna represent them using fewer bytes
 // my method is based on the fact that a 30 bits (max 1073741823)
 // are enough to represent all these numbers
-bitset<30> EncodeSSN(string ssn)
-{
+bitset<30> EncodeSSN(string ssn) {
     assert(ssn.length() == 11);
     // remove hyphens
     ssn.erase(3, 1);
@@ -100,13 +103,11 @@ bitset<30> EncodeSSN(string ssn)
     return stol(ssn);
 }
 
-string DecodeSSN(const bitset<30>& encoded_ssn)
-{
+string DecodeSSN(const bitset<30>& encoded_ssn) {
     string ssn = to_string(encoded_ssn.to_ulong());
     // padding
     int pad_len = 9 - ssn.length();
-    for (int i = 0; i < pad_len; ++i)
-    {
+    for (int i = 0; i < pad_len; ++i) {
         ssn = '0' + ssn;
     }
     // reformat
@@ -128,8 +129,7 @@ string DecodeSSN(const bitset<30>& encoded_ssn)
 // consider inputs must in the format "firstname middleinitial lastname"
 //                                 max length 10 length 1      length 14
 int field_length[3] = {10, 1, 14};
-bitset<150> EncodeName(string name)
-{   // assumes input's in valid format
+bitset<150> EncodeName(string name) {  // assumes input's in valid format
     // extract 3 fields
     stringstream tokenizer(name);
     string fields[3];
@@ -138,12 +138,9 @@ bitset<150> EncodeName(string name)
     bitset<150> encoded_name;
     // encode every 6 bits
     int mask_shift = 0;
-    for (int f = 0; f < 3; ++f)
-    {   // for each field
-        for (int i = 0; i < field_length[f]; ++i, mask_shift += 6)
-        {
-            if (i >= fields[f].length())
-            {
+    for (int f = 0; f < 3; ++f) {  // for each field
+        for (int i = 0; i < field_length[f]; ++i, mask_shift += 6) {
+            if (i >= fields[f].length()) {
                 continue;
             }
 
@@ -152,19 +149,15 @@ bitset<150> EncodeName(string name)
 
             char ch = fields[f][i];
 
-            if (isupper(ch))
-            {
+            if (isupper(ch)) {
                 need_capitalize = true;
                 ch_val = ch - 'A';
-            }
-            else
-            {
+            } else {
                 ch_val = ch - 'a';
             }
 
             bitset<150> encoded_ch(ch_val);
-            if (need_capitalize)
-            {
+            if (need_capitalize) {
                 encoded_ch[5] = 1;
             }
 
@@ -176,22 +169,18 @@ bitset<150> EncodeName(string name)
 }
 
 bitset<150> char_mask = (1 << 6) - 1;
-string DecodeName(bitset<150> encoded_name)
-{
+string DecodeName(bitset<150> encoded_name) {
     string name;
-    name.reserve(27); // max of 25 characters and 2 spaces
+    name.reserve(27);  // max of 25 characters and 2 spaces
 
     // decode every 6 bits
-    for (int f = 0; f < 3; ++f)
-    {
-        for (int i = 0; i < field_length[f]; ++i, encoded_name >>= 6)
-        {
+    for (int f = 0; f < 3; ++f) {
+        for (int i = 0; i < field_length[f]; ++i, encoded_name >>= 6) {
             auto ch_bit = (encoded_name & char_mask);
             bool need_capitalize = ch_bit[5];
             ch_bit[5] = 0;
             auto ch = ch_bit.to_ulong();
-            if (ch == 0)
-            {
+            if (ch == 0) {
                 continue;
             }
 
@@ -205,15 +194,14 @@ string DecodeName(bitset<150> encoded_name)
     return name;
 }
 
-int main()
-{
+int main() {
     const string today = "04292019";
 
     auto encoded_date = EncodeDate(today);
     cout << "encoded_date: " << encoded_date << '\n';
     cout << "decoded_date: " << DecodeDate(encoded_date) << '\n';
 
-    const string ssn = "347-78-9235"; // a person from IL
+    const string ssn = "347-78-9235";  // a person from IL
     auto encoded_ssn = EncodeSSN(ssn);
     cout << "encoded_ssn: " << encoded_ssn << '\n';
     cout << "decoded_ssn: " << DecodeSSN(encoded_ssn) << '\n';

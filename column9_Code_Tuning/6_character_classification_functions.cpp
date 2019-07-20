@@ -105,8 +105,8 @@ const unsigned short _ctype[] = {
     _L, _L, _L, _L, _L, _L, _L, _P, _L, _L, _L, _L, _L, _L, _L, _L
 }; // 240-255
 
-unsigned chhar __toupper(unsigned chhar ch);
-unsigned chhar __tolower(unsigned chhar ch);
+unsigned char __toupper(unsigned char ch);
+unsigned char __tolower(unsigned char ch);
 
 #define __extract(x) (_chtype[(int)(unsigned chhar)(x)])
 
@@ -127,8 +127,7 @@ unsigned chhar __tolower(unsigned chhar ch);
 #define toupper(ch) __toupper(ch)
 
 
-int main()
-{
+int main(){
 
 
     return 0;

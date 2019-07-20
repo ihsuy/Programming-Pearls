@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -37,8 +44,7 @@ if(n>=mod) n -= mod;
 
 */
 
-void modulo(int& n, const int& mod)
-{
+void modulo(int& n, const int& mod) {
     n %= mod;
 }
 
@@ -47,10 +53,8 @@ void modulo(int& n, const int& mod)
 // avg normal modulo function: 41.0139 nano
 // avg ifmodulo              : 35.2428
 // a bit faster than %
-void ifmodulo(int& n, const int& mod)
-{
-    if (n >= mod)
-    {
+void ifmodulo(int& n, const int& mod) {
+    if (n >= mod) {
         n -= mod;
     }
 }
@@ -60,37 +64,31 @@ void ifmodulo(int& n, const int& mod)
 // avg normal modulo function: 65.93 nano
 // avg ifmodulo2             : 80.49 nano
 // this function is slower than the % operation
-void ifmodulo2(int& n, const int& mod)
-{
-    while (n >= mod)
-    {
+void ifmodulo2(int& n, const int& mod) {
+    while (n >= mod) {
         n -= mod;
     }
 }
 
-ll profiler(void(modulo_func)(int&, const int&), int& n, const int& mod)
-{
+ll profiler(void(modulo_func)(int&, const int&), int& n, const int& mod) {
     auto t1 = chrono::high_resolution_clock::now();
     modulo_func(n, mod);
     auto t2 = chrono::high_resolution_clock::now() - t1;
     auto t = chrono::duration_cast<chrono::nanoseconds>(t2).count();
-    //cout << "result: " << n << '\n';
-    //cout << "func time: " << t << "nanoseconds\n";
+    // cout << "result: " << n << '\n';
+    // cout << "func time: " << t << "nanoseconds\n";
     return t;
 }
 
-
-int main()
-{
-    //int nn = 100;
+int main() {
+    // int nn = 100;
     int mod = 1000000;
 
     ll t1_sum = 0;
     ll t2_sum = 0;
     // ll t3_sum = 0;
-    for (int n = 0; n < 2 * mod; ++n)
-    {
-        int n1 = n, n2 = n/*, n3 = n*/;
+    for (int n = 0; n < 2 * mod; ++n) {
+        int n1 = n, n2 = n /*, n3 = n*/;
 
         auto t1 = profiler(modulo, n1, mod);
         auto t2 = profiler(ifmodulo, n2, mod);

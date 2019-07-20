@@ -1,25 +1,32 @@
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <unordered_map>
-#include <set>
-#include <map>
-#include <list>
-#include <chrono>
-#include <random>
-#include <algorithm>
 #include <math.h>
-#include <queue>
-#include <stack>
-#include <sstream>
-#include <utility>
+#include <algorithm>
 #include <bitset>
+#include <chrono>
 #include <fstream>
+#include <iostream>
+#include <list>
+#include <map>
+#include <queue>
+#include <random>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 typedef long long ll;
-template<typename T>
-inline void inspect(T& t) {typename T::iterator i1 = t.begin(), i2 = t.end(); while (i1 != i2) {std::cout << (*i1) << ' '; i1++;} std::cout << '\n';}
+template <typename T>
+inline void inspect(T& t) {
+    typename T::iterator i1 = t.begin(), i2 = t.end();
+    while (i1 != i2) {
+        std::cout << (*i1) << ' ';
+        i1++;
+    }
+    std::cout << '\n';
+}
 
 /////////////////////////////////////////////////////////////
 using namespace std;
@@ -61,76 +68,76 @@ the number of integers is halved in each iteration, so the worst-case
 // 	return mask & n;
 // }
 
-int findDuplicate(int* nums, const long& n)
-{	// find any duplicate in nums
-	// mask is used to get the first mask_size bit
-	// and to cluster each number into buckets
-	const int mask_size = 4;
-	assert(mask_size < 16 and ((mask_size & (mask_size-1)) == 0));
-	int mask = (1 << mask_size)-1;
+int findDuplicate(int* nums, const long& n) {  // find any duplicate in nums
+    // mask is used to get the first mask_size bit
+    // and to cluster each number into buckets
+    const int mask_size = 4;
+    assert(mask_size < 16 and ((mask_size & (mask_size - 1)) == 0));
+    int mask = (1 << mask_size) - 1;
 
-	// size of extra memory
-	// more extra memory tends to give faster performance
-	const int sz = 1 << (mask_size);
-	int counter[sz];
+    // size of extra memory
+    // more extra memory tends to give faster performance
+    const int sz = 1 << (mask_size);
+    int counter[sz];
 
-	// the maximum number that can exist in each "bucket"
-	// if no duplicates exist
-	int upper = n / sz;
-	// signature_cat is used to store concatnated signatures 
-	// through out the searching process
-	int signature_cat = 0;
+    // the maximum number that can exist in each "bucket"
+    // if no duplicates exist
+    int upper = n / sz;
+    // signature_cat is used to store concatnated signatures
+    // through out the searching process
+    int signature_cat = 0;
 
-	for (int b = 0; b < 32 - mask_size; b += mask_size)
-	{	// b stands for "begin" and indicates the current begin location
-		// in numbers bit representation
-		memset(counter, 0, sizeof(int)*sz);
+    for (int b = 0; b < 32 - mask_size;
+         b += mask_size) {  // b stands for "begin" and indicates the current
+                            // begin location
+        // in numbers bit representation
+        memset(counter, 0, sizeof(int) * sz);
 
-		// sig_mask is used to get first lengthOf(signature_cat) bits
-		int sig_mask = (1 << b) - 1;
+        // sig_mask is used to get first lengthOf(signature_cat) bits
+        int sig_mask = (1 << b) - 1;
 
-		for (int i = 0; i < n; ++i)
-		{	// we put this in buckets if this number accords with 
-			// signature_cat
-			if (signature_cat == 0 or (signature_cat == (nums[i]&sig_mask)))
-			{	// get its new signature
-				int signature = (nums[i]>>b)&mask;
-				// put in bucket
-				counter[signature]++;
+        for (int i = 0; i < n;
+             ++i) {  // we put this in buckets if this number accords with
+            // signature_cat
+            if (signature_cat == 0 or
+                (signature_cat ==
+                 (nums[i] & sig_mask))) {  // get its new signature
+                int signature = (nums[i] >> b) & mask;
+                // put in bucket
+                counter[signature]++;
 
-				if (counter[signature] > upper)
-				{	// if size of certain bucket exceeds upper
-					// then we must have duplicates in this bucket
-					// we are done and its ok to further narrow down the range
-					signature_cat |= (signature << b);
-					break;
-				}
-			}
-		}
-		// upper should be shrinked as our searching range is getting smaller
-		upper /= sz;
-	}
-	
-	return signature_cat;
+                if (counter[signature] >
+                    upper) {  // if size of certain bucket exceeds upper
+                    // then we must have duplicates in this bucket
+                    // we are done and its ok to further narrow down the range
+                    signature_cat |= (signature << b);
+                    break;
+                }
+            }
+        }
+        // upper should be shrinked as our searching range is getting smaller
+        upper /= sz;
+    }
+
+    return signature_cat;
 }
 
 long maxn = 80000000;
 int* nums = new int[maxn];
 
-int main()
-{
-	cout << "creating numbers...\n";
+int main() {
+    cout << "creating numbers...\n";
 
-	for (int i = 0; i < maxn; ++i)
-	{
-		nums[i] = i;
-	}
+    for (int i = 0; i < maxn; ++i) {
+        nums[i] = i;
+    }
 
-	nums[44298112] = 12983; // explicitly create a arbitrary duplicate of value at an arbitrary place
+    nums[44298112] = 12983;  // explicitly create a arbitrary duplicate of value
+                             // at an arbitrary place
 
-	cout << "searching for duplicates...\n";
+    cout << "searching for duplicates...\n";
 
-	cout << "duplicate: " << findDuplicate(nums, maxn) << '\n';
+    cout << "duplicate: " << findDuplicate(nums, maxn) << '\n';
 
-	return 0;
+    return 0;
 }
